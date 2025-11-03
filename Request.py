@@ -91,3 +91,17 @@ class Request:
         WHERE userID = '%s'"""
         values = (userID,)
         return self.db.fetch(sql, values)
+    
+    def viewCompletedReq(self, userID):
+        sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
+        FROM Request
+        WHERE reqStatus = '%s' AND userID = '%s'"""
+        values = ('Completed', userID)
+        return self.db.fetch(sql, values)
+    
+    def searchCompletedReq(self, requestID, userID):
+        sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
+        FROM Request
+        WHERE reqStatus = '%s' AND requestID = '%s' AND userID = '%s'"""
+        values = ('Completed', requestID, userID)
+        return self.db.fetch(sql, values)
