@@ -84,3 +84,10 @@ class Request:
         WHERE userID = '%s'"""
         values = (userID,)
         return self.db.fetch(sql, values)
+    
+    def reqShortlistCount(self, userID):
+        sql = """"SELECT requestID, shortlistCount
+        FROM Request
+        WHERE userID = '%s'"""
+        values = (userID,)
+        return self.db.fetch(sql, values)
