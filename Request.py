@@ -57,3 +57,10 @@ class Request:
         WHERE userID = %s"""
         values = (userID,)
         return self.db.fetch(sql, values)
+    
+    def updateReq(self, requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, userID):
+        sql = """UPDATE Request
+        SET reqDescription = '%s', helpNeededDate = '%s', helpNeededTime = '%s', reqStatus = '%s', category = '%s'
+        WHERE requestID = '%s' AND userID = '%s'"""
+        values = (reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, requestID, userID)
+        self.db.execute(sql, values)
