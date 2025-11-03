@@ -42,7 +42,7 @@ class Request:
         self.db = db
 
     # Create row in Request table
-    def createReq(self, reqDescription, helpNeededDate, helpNeededTime, category, userID):
+    def createReq(self, reqDescription: str, helpNeededDate: str, helpNeededTime: str, category: str, userID: str):
         # Not included columns & reason - requestID (auto-increment PK), reqCreatedOn (DEFAULT CURRENT_DATE), viewCount & shortlistCount (DEFAULT 0), reqStatus (DEFAULT 'Open')
 
         # Checks that all fields are filled
@@ -65,19 +65,48 @@ class Request:
         self.db.execute(sql,values)
         return {"message": f"{category} request for {helpNeededDate} at {helpNeededTime} created successfully!"}
     
-    def viewReq(self, userID):
-        # Receives all requests made by this user from Request table
+    # Returns all requests made by this user from Request table in a list(tuples)
+    def viewReq(self, userID: str):
         sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
         FROM Request
         WHERE userID = %s"""
         values = (userID,)
         return self.db.fetch(sql, values)
     
-    def updateReq(self, requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, userID):
-        sql = """UPDATE Request
-        SET reqDescription = '%s', helpNeededDate = '%s', helpNeededTime = '%s', reqStatus = '%s', category = '%s'
-        WHERE requestID = '%s' AND userID = '%s'"""
-        values = (reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, requestID, userID)
+    # Update a specific request's info
+    def updateReq(self, requestID: int, reqDescription: str, helpNeededDate: str, helpNeededTime: str, reqStatus: str, category: str, userID: str):
+        # Checks date and time inputs (if entered)
+        if len(helpNeededDate) != 0:
+            if not self.isDateValid(helpNeededDate):
+                return {"message": "Failed to update request: date field incorrectly filled."}
+        
+        if len(helpNeededTime) != 0:
+            if not self.isTimeValid(helpNeededTime):
+                return {"message": "Failed to update request: time field incorrectly filled."}
+            
+        # Checks reqStatus input
+        if len(reqStatus) != 0:
+            result = self.isStatusValid(reqStatus)
+            if result:
+                reqStatus = result
+            else:
+                return {"message": "Failed to update request: status field incorrectly filled."}
+            
+        # Filters out empty arguments
+        updatesRaw = {"reqDescription": reqDescription, 
+                   "helpNeededDate": helpNeededDate, 
+                   "helpNeededTime": helpNeededTime, 
+                   "reqStatus": reqStatus, 
+                   "category": category}
+        updatesFiltered = {k: v for k, v in updatesRaw.items() if v != ""}
+        if len(updatesFiltered) == 0:
+            return {"message": "Failed to update request: nothing to update."}
+
+        # Updates request
+        setClause = ", ".join([f"{k} = %s" for k in updatesFiltered])
+        sql = f"UPDATE Request SET {setClause} WHERE requestID = %s AND userID = %s"
+        values = list(updatesFiltered.values())
+        values.extend([requestID, userID])
         self.db.execute(sql, values)
 
     def deleteReq(self, requestID, userID):
@@ -121,18 +150,31 @@ class Request:
         values = ('Completed', requestID, userID)
         return self.db.fetch(sql, values)
     
-    def isDateValid(dateInput):
     # Accepts date input following this format -> DD/MM/YYYY
+    def isDateValid(dateInput: str):
         try:
             datetime.strptime(dateInput, "%d/%m/%Y")
             return True
         except ValueError:
             return False
 
-    def isTimeValid(timeInput):
     # Accepts time input following this format (24 hour format) -> HH:MM
+    def isTimeValid(timeInput: str):
         try:
             datetime.strptime(timeInput, "%H:%M")
             return True
         except ValueError:
             return False
+        
+    # Accepts status input according to words in this dict
+    # Returns false if not present; returns the word (properly capitalized) if present
+    def isStatusValid(statusInput: str):
+        testChecker = False
+        if not statusInput.isalpha():
+            return testChecker
+        acceptedStatuses = ["Open", "Completed"]
+        statusInput = statusInput.capitalize()
+        for word in acceptedStatuses:
+            if word == statusInput:
+                testChecker = word
+        return testChecker
