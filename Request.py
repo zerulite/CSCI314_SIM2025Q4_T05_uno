@@ -64,3 +64,9 @@ class Request:
         WHERE requestID = '%s' AND userID = '%s'"""
         values = (reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, requestID, userID)
         self.db.execute(sql, values)
+
+    def deleteReq(self, requestID, userID):
+        sql = """DELETE FROM Request
+        WHERE requestID = '%s' AND userID = '%s'"""
+        values = (requestID, userID)
+        self.db.execute(sql, values)
