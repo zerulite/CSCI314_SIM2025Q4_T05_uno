@@ -77,3 +77,10 @@ class Request:
         WHERE requestID = '%s' AND userID = '%s'"""
         values = (requestID, userID)
         return self.db.fetch(sql, values)
+    
+    def reqViewCount(self, userID):
+        sql = """SELECT requestID, viewCount
+        FROM Request
+        WHERE userID = '%s'"""
+        values = (userID,)
+        return self.db.fetch(sql, values)
