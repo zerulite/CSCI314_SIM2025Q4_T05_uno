@@ -49,3 +49,11 @@ class Request:
         values = (reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, userID)
         self.db.execute(sql,values)
         return {"message": f"{category} request for {helpNeededDate} at {helpNeededTime} created successfully!"}
+    
+    def viewReq(self, userID):
+        # Receives all requests made by this user from Request table
+        sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
+        FROM Request
+        WHERE userID = %s"""
+        values = (userID,)
+        return self.db.fetch(sql, values)
