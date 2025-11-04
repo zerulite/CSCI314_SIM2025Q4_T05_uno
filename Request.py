@@ -133,8 +133,19 @@ class Request:
         WHERE requestID = '%s' AND userID = '%s'"""
         values = (requestID, userID)
         self.db.execute(sql, values)
+        return {"message": f"Request {requestID} deleted successfully!"}
 
+    # Find a specified request's info from the table
     def searchReq(self, requestID, userID):
+        # Checks if requestID was entered and if the requestID/userID exists in the table
+        if len(requestID) == 0:
+            return {"message": "Failed to find request: requestID field not filled."}
+        else:
+            result = self.doesReqExist(requestID, userID)
+            if not (result):
+                return {"message": f"Failed to find request: requestID {requestID} not found for user {userID}."}
+        
+        # Finds request
         sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
         FROM Request
         WHERE requestID = '%s' AND userID = '%s'"""
