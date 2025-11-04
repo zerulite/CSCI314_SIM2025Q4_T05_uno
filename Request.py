@@ -130,13 +130,13 @@ class Request:
             
         # Deletes request
         sql = """DELETE FROM Request
-        WHERE requestID = '%s' AND userID = '%s'"""
+        WHERE requestID = %s AND userID = %s"""
         values = (requestID, userID)
         self.db.execute(sql, values)
         return {"message": f"Request {requestID} deleted successfully!"}
 
     # Find a specified request's info from the table
-    def searchReq(self, requestID, userID):
+    def searchReq(self, requestID: str, userID: str):
         # Checks if requestID was entered and if the requestID/userID exists in the table
         if len(requestID) == 0:
             return {"message": "Failed to find request: requestID field not filled."}
@@ -148,32 +148,45 @@ class Request:
         # Finds request
         sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
         FROM Request
-        WHERE requestID = '%s' AND userID = '%s'"""
+        WHERE requestID = %s AND userID = %s"""
         values = (requestID, userID)
         return self.db.fetch(sql, values)
     
-    def reqViewCount(self, userID):
+    # Returns nested list of requestID/viewCount tuples of all request associated with userID
+    def reqViewCount(self, userID: str):
         sql = """SELECT requestID, viewCount
         FROM Request
-        WHERE userID = '%s'"""
+        WHERE userID = %s"""
         values = (userID,)
         return self.db.fetch(sql, values)
     
-    def reqShortlistCount(self, userID):
+    # Returns nested list of requestID/shortlistCount tuples of all request associated with userID
+    def reqShortlistCount(self, userID: str):
         sql = """"SELECT requestID, shortlistCount
         FROM Request
-        WHERE userID = '%s'"""
+        WHERE userID = %s"""
         values = (userID,)
         return self.db.fetch(sql, values)
     
-    def viewCompletedReq(self, userID):
+    # Returns nested list of all requests that have the 'Completed' status associated with userID
+    def viewCompletedReq(self, userID: str):
         sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
         FROM Request
-        WHERE reqStatus = '%s' AND userID = '%s'"""
+        WHERE reqStatus = %s AND userID = %s"""
         values = ('Completed', userID)
         return self.db.fetch(sql, values)
     
-    def searchCompletedReq(self, requestID, userID):
+    # Find a specified 'Completed' request's info from the table
+    def searchCompletedReq(self, requestID: str, userID: str):
+        # Checks if requestID was entered and if the requestID/userID exists in the table
+        if len(requestID) == 0:
+            return {"message": "Failed to find request: requestID field not filled."}
+        else:
+            result = self.doesReqExist(requestID, userID)
+            if not (result):
+                return {"message": f"Failed to find request: requestID {requestID} not found for user {userID}."}
+        
+        # Finds 'Completed' request
         sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
         FROM Request
         WHERE reqStatus = '%s' AND requestID = '%s' AND userID = '%s'"""
