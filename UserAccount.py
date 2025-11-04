@@ -2,34 +2,39 @@ import mysql.connector
 
 class Database:
     def __init__(self):
+        self.host = "localhost"
+        self.user = "root"
+        self.password = "Splatoon2!"
+        self.database = "csit314"
+        self.connection = None
+        self.cursor = None
         self.connect()
 
     def connect(self):
-        """Establish connection to MySQL"""
         try:
             self.connection = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="Splatoon2!", #Change this if needed
-                database="csit314"
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=self.database
             )
-            self.cursor = self.connection.cursor()
-            print("Database connected successfully!")
+            self.cursor = self.connection.cursor(dictionary=True) 
+            print(f"Connected to database '{self.database}' successfully!")
         except mysql.connector.Error as err:
             print(f"Database connection error: {err}")
 
     def execute(self, query, values=None):
-        """Execute an INSERT/UPDATE/DELETE query"""
-        self.cursor.execute(query, values or ())
-        self.connection.commit()
+        try:
+            self.cursor.execute(query, values or ())
+            self.connection.commit()
+        except mysql.connector.Error as err:
+            print(f"Query execution error: {err}")
 
     def fetch(self, query, values=None):
-        """Execute a SELECT query and return results"""
         self.cursor.execute(query, values or ())
-        return self.cursor.fetchall()
+        return self.cursor.fetchall() 
 
     def close(self):
-        """Close the database connection"""
         if self.cursor:
             self.cursor.close()
         if self.connection:
@@ -41,31 +46,149 @@ class UserAccount:
     def __init__(self):
         self.db = Database()
 
-    #Create Account
+    # Create Account
     def create_acct(self, userID, password, name, email, profile, userState):
-        check_sql = "SELECT * FROM UserAccount WHERE userID = %s"
-        if self.db.fetch(check_sql, (userID,)):
+        # Check if any field is empty
+        if not all([userID, password, name, email, profile, userState]):
+            return {"message": "Failed to create user: all fields are required."}
+
+        # Check if user already exists
+        check_user_sql = "SELECT * FROM UserAccount WHERE userID = %s"
+        if self.db.fetch(check_user_sql, (userID,)):
             return {"message": f"User {userID} already exists."}
         
+        # Check if user already exists
+        check_email_sql = "SELECT * FROM UserAccount WHERE email = %s"
+        if self.db.fetch(check_email_sql, (email,)):
+            return {"message": f"{email} already exists."}
+
+        # Insert new user
         sql = """INSERT INTO UserAccount
-                 (userID, password, name, email, profile, userState) 
-                 VALUES (%s, %s, %s, %s, %s, %s)"""
+                (userID, password, name, email, profile, userState)
+                VALUES (%s, %s, %s, %s, %s, %s)"""
         values = (userID, password, name, email, profile, userState)
         self.db.execute(sql, values)
-        self.db.close()
         return {"message": f"User {userID} successfully created."}
 
-    #Update Account
+    # View Account
+    def view_acct(self, userID):
+        sql = "SELECT * FROM UserAccount WHERE userID = %s"
+        result = self.db.fetch(sql, (userID,))
+        if not result:
+            return None
+        return result[0]
+
+    # List all Accounts
+    def list_acct(self):
+        sql = "SELECT userID, name, email, profile, userState FROM UserAccount"
+        return self.db.fetch(sql)
+
+    # Update Account
     def update_acct(self, userID, password, name, email, profile, userState):
         check_sql = "SELECT * FROM UserAccount WHERE userID = %s"
         if self.db.fetch(check_sql, (userID,)):
-            sql = """UPDATE UserAccount 
-                 SET password=%s, name=%s, email=%s, profile=%s, userState=%s 
-                 WHERE userID=%s"""
+            sql = """UPDATE UserAccount
+                     SET password=%s, name=%s, email=%s, profile=%s, userState=%s
+                     WHERE userID=%s"""
             values = (password, name, email, profile, userState, userID)
             self.db.execute(sql, values)
-            self.db.close()
-            return {"message": f"User {userID} updated succesfully."}
+            return {"message": f"User {userID} updated successfully."}
         else:
-            self.db.close()
-            return {"message": f"User {userID} update failed."}
+            return {"message": f"User {userID} update failed — not found."}
+        
+    #Suspend Account
+    def suspend_acct(self, userID, userState):
+        # Normalize case
+        userState = userState.lower()
+
+        # Check if the user exists
+        check_sql = "SELECT userState FROM UserAccount WHERE userID = %s"
+        result = self.db.fetch(check_sql, (userID,))
+        
+        if not result:
+            return {"message": f"User {userID} not found."}
+
+        current_state = result[0]['userState'].lower()
+
+        # If already in the desired state, no change needed
+        if current_state == userState:
+            if userState == "inactive":
+                return {"message": f"User {userID} is already inactive."}
+            elif userState == "active":
+                return {"message": f"User {userID} is already active."}
+            else:
+                return {"message": f"User {userID} already in state '{userState}'."}
+
+        # Otherwise, update to the new state
+        update_sql = """UPDATE UserAccount
+                        SET userState = %s
+                        WHERE userID = %s"""
+        self.db.execute(update_sql, (userState, userID))
+
+        # Return message depending on what the new state is
+        if userState == "inactive":
+            return {"message": f"User {userID} suspended successfully."}
+        elif userState == "active":
+            return {"message": f"User {userID} unsuspended successfully."}
+        else:
+            return {"message": f"User {userID} updated to state '{userState}' successfully."}
+
+
+    #Search Account
+    def search_users(self, **kwargs):
+        # Remove empty values
+        search_fields = {k: v for k, v in kwargs.items() if v}
+
+        # Return empty list if nothing to search
+        if not search_fields:
+            return []
+
+        query = "SELECT * FROM UserAccount WHERE 1=1"
+        params = []
+
+        for field in ['userID', 'password', 'name', 'email', 'profile', 'userState']:
+            value = search_fields.get(field)
+            if value:
+                if field in ['name', 'email', 'userID']:
+                    query += f" AND {field} LIKE %s"
+                    params.append(f"%{value}%")
+                else:
+                    query += f" AND {field} = %s"
+                    params.append(value)
+
+        return self.db.fetch(query, params)
+    
+    def login(self, userID, password):
+        # Check for missing fields
+        if not userID or not password:
+            return {"success": False, "message": "All fields are required."}
+
+        # Verify login credentials
+        sql = "SELECT userID, name, profile, userState FROM UserAccount WHERE userID=%s AND password=%s"
+        result = self.db.fetch(sql, (userID, password))
+
+        if not result:
+            return {"success": False, "message": "Invalid userID or password."}
+
+        user = result[0]
+
+        # Check suspension
+        if user["userState"].lower() == "inactive":
+            return {"success": False, "message": "Your account is suspended."}
+
+        # Determine redirect based on profile
+        profile = user["profile"]
+        redirect_page = {
+            "CSR Representative": "csr_main",
+            "Platform Management": "platform_main",
+            "User Admin": "admin_main",
+            "Person In Need": "PIN_main"
+        }.get(profile, "dashboard")
+
+        return {
+            "success": True,
+            "message": "Login successful.",
+            "user": user,
+            "redirect": redirect_page
+        }
+
