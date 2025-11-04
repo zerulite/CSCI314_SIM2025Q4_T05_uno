@@ -74,11 +74,18 @@ class Request:
         return self.db.fetch(sql, values)
     
     # Update a specified request's info from the table
-    def updateReq(self, requestID: str, reqDescription: str, helpNeededDate: str, helpNeededTime: str, reqStatus: str, category: str, userID: str):
+    def updateReq(self, requestID: str, reqDescription: str, helpNeededDate: str, helpNeededTime: str, reqStatus: str, category: str, userID: str):        
         # Checks if requestID was entered and if the requestID/userID exists in the table
         if len(requestID) == 0:
             return {"message": "Failed to update request: requestID field not filled."}
         else:
+            # Checks and converts requestID input
+            result = self.strToIntConverter(requestID)
+            if result:
+                requestID = result
+            else:
+                return {"message": "Failed to update request: requestID field incorrectly filled."}
+            
             result = self.doesReqExist(requestID, userID)
             if not (result):
                 return {"message": f"Failed to update request: requestID {requestID} not found for user {userID}."}
@@ -124,9 +131,16 @@ class Request:
         if len(requestID) == 0:
             return {"message": "Failed to delete request: requestID field not filled."}
         else:
+            # Checks and converts requestID input
+            result = self.strToIntConverter(requestID)
+            if result:
+                requestID = result
+            else:
+                return {"message": "Failed to delete request: requestID field incorrectly filled."}
+            
             result = self.doesReqExist(requestID, userID)
             if not (result):
-                return {"message": f"Failed to update request: requestID {requestID} not found for user {userID}."}
+                return {"message": f"Failed to delete request: requestID {requestID} not found for user {userID}."}
             
         # Deletes request
         sql = """DELETE FROM Request
@@ -141,6 +155,13 @@ class Request:
         if len(requestID) == 0:
             return {"message": "Failed to find request: requestID field not filled."}
         else:
+            # Checks and converts requestID input
+            result = self.strToIntConverter(requestID)
+            if result:
+                requestID = result
+            else:
+                return {"message": "Failed to find request: requestID field incorrectly filled."}
+            
             result = self.doesReqExist(requestID, userID)
             if not (result):
                 return {"message": f"Failed to find request: requestID {requestID} not found for user {userID}."}
@@ -182,6 +203,13 @@ class Request:
         if len(requestID) == 0:
             return {"message": "Failed to find request: requestID field not filled."}
         else:
+            # Checks and converts requestID input
+            result = self.strToIntConverter(requestID)
+            if result:
+                requestID = result
+            else:
+                return {"message": "Failed to find request: requestID field incorrectly filled."}
+            
             result = self.doesReqExist(requestID, userID)
             if not (result):
                 return {"message": f"Failed to find request: requestID {requestID} not found for user {userID}."}
@@ -189,12 +217,22 @@ class Request:
         # Finds 'Completed' request
         sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
         FROM Request
-        WHERE reqStatus = '%s' AND requestID = '%s' AND userID = '%s'"""
+        WHERE reqStatus = %s AND requestID = %s AND userID = %s"""
         values = ('Completed', requestID, userID)
         return self.db.fetch(sql, values)
     
-    # 
-    def doesReqExist(self, requestID: str, userID: str):
+    # Specifically used for requestID since the table stores it as an int but html takes in as str
+    # Returns requestID converted in int if tests pass, False if test fails
+    @staticmethod
+    def strToIntConverter(requestID: str):
+        if requestID.isdigit():
+            # Edge case of user entering "0" as requestID and passing the .isdigit() is self-solving as int("0") will return as False
+            return int(requestID)
+        else:
+            return False
+    
+    # Checks if specified requestID/userID pair has an existing request in the table
+    def doesReqExist(self, requestID: int, userID: str):
         sql = "SELECT * FROM Request WHERE requestID = %s AND userID = %s"
         values = (requestID, userID)
         result = self.db.fetch(sql, values)

@@ -95,25 +95,41 @@ def test6():
 def test7():
     
     x = 12
-    y = "02"
+    y = "0"
     z = "12"
 
+    print("Printing type")
     print(type(x))
     print(type(y))
     print(type(z))
 
+    print("\nPrinting type after int conversion")
     print(type(int(y)))
     print(type(int(z)))
 
+    print("\nPrinting after int conversion")
     print(int(y))
     print(int(z))
 
+    print("\nPrinting .isdigit()")
     # print(x.isdigit())
     print(y.isdigit())
     print(z.isdigit())
 
-    print(len(x))
+    print("\nPrinting len()")
+    # print(len(x))
     print(len(y))
+
+    print("\nTesting 0")
+    if y:
+        print("Str test TRUE")
+    elif not y:
+        print("Str test FALSE")
+
+    if (int(y)):
+        print("Int test TRUE")
+    else:
+        print("Int test FALSE")
 
 def test8():
     x = 0
@@ -123,4 +139,4 @@ def test8():
     else:
         print("FALSE!")
 
-test4()
+test7()
