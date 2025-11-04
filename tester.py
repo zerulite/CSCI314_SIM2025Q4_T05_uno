@@ -38,10 +38,22 @@ def test4():
     thislist = ["Alice", "Betty", "Cecil", "Desmond"]
     thatlist = []
     thoselist = [("1", "Alice"), ("2", "Betty"), ("3", "Cecil")]
+    themlist = [("1", "Alice")]
 
     print(len(thislist))
     print(len(thatlist))
     print(len(thoselist))
+    print(len(themlist))
+
+    if thatlist:
+        print("TRUE so > 0")
+    if not thatlist:
+        print("FALSE so < 0")
+
+    if themlist:
+        print("TRUE so > 0")
+    if not themlist:
+        print("FALSE so < 0")
 
 def test5():
     reqDescription = "desc"
@@ -80,4 +92,35 @@ def test6():
     print(len(xDict))
     print(len(yDict))
 
-test5()
+def test7():
+    
+    x = 12
+    y = "02"
+    z = "12"
+
+    print(type(x))
+    print(type(y))
+    print(type(z))
+
+    print(type(int(y)))
+    print(type(int(z)))
+
+    print(int(y))
+    print(int(z))
+
+    # print(x.isdigit())
+    print(y.isdigit())
+    print(z.isdigit())
+
+    print(len(x))
+    print(len(y))
+
+def test8():
+    x = 0
+
+    if x:
+        print("TRUE!")
+    else:
+        print("FALSE!")
+
+test4()

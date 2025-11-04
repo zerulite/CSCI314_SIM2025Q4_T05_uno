@@ -73,8 +73,16 @@ class Request:
         values = (userID,)
         return self.db.fetch(sql, values)
     
-    # Update a specific request's info
-    def updateReq(self, requestID: int, reqDescription: str, helpNeededDate: str, helpNeededTime: str, reqStatus: str, category: str, userID: str):
+    # Update a specified request's info from the table
+    def updateReq(self, requestID: str, reqDescription: str, helpNeededDate: str, helpNeededTime: str, reqStatus: str, category: str, userID: str):
+        # Checks if requestID was entered and if the requestID/userID exists in the table
+        if len(requestID) == 0:
+            return {"message": "Failed to update request: requestID field not filled."}
+        else:
+            result = self.doesReqExist(requestID, userID)
+            if not (result):
+                return {"message": f"Failed to update request: requestID {requestID} not found for user {userID}."}
+
         # Checks date and time inputs (if entered)
         if len(helpNeededDate) != 0:
             if not self.isDateValid(helpNeededDate):
@@ -108,8 +116,19 @@ class Request:
         values = list(updatesFiltered.values())
         values.extend([requestID, userID])
         self.db.execute(sql, values)
+        return {"message": f"Request {requestID} for {helpNeededDate} at {helpNeededTime} updated successfully!"}
 
-    def deleteReq(self, requestID, userID):
+    # Delete a specified request's info off the table
+    def deleteReq(self, requestID: str, userID: str):
+        # Checks if requestID was entered and if the requestID/userID exists in the table
+        if len(requestID) == 0:
+            return {"message": "Failed to delete request: requestID field not filled."}
+        else:
+            result = self.doesReqExist(requestID, userID)
+            if not (result):
+                return {"message": f"Failed to update request: requestID {requestID} not found for user {userID}."}
+            
+        # Deletes request
         sql = """DELETE FROM Request
         WHERE requestID = '%s' AND userID = '%s'"""
         values = (requestID, userID)
@@ -150,7 +169,19 @@ class Request:
         values = ('Completed', requestID, userID)
         return self.db.fetch(sql, values)
     
+    # 
+    def doesReqExist(self, requestID: str, userID: str):
+        sql = "SELECT * FROM Request WHERE requestID = %s AND userID = %s"
+        values = (requestID, userID)
+        result = self.db.fetch(sql, values)
+        if len(result) == 0:
+            # Didnt find a matching requestID + userID pair
+            return False
+        else:
+            return True
+    
     # Accepts date input following this format -> DD/MM/YYYY
+    @staticmethod
     def isDateValid(dateInput: str):
         try:
             datetime.strptime(dateInput, "%d/%m/%Y")
@@ -159,6 +190,7 @@ class Request:
             return False
 
     # Accepts time input following this format (24 hour format) -> HH:MM
+    @staticmethod
     def isTimeValid(timeInput: str):
         try:
             datetime.strptime(timeInput, "%H:%M")
@@ -168,6 +200,7 @@ class Request:
         
     # Accepts status input according to words in this dict
     # Returns false if not present; returns the word (properly capitalized) if present
+    @staticmethod
     def isStatusValid(statusInput: str):
         testChecker = False
         if not statusInput.isalpha():
