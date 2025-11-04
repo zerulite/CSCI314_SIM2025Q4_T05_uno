@@ -1,13 +1,7 @@
-x = "abcDEFhiJk"
-y = ""
+# ================================================================
+# Ignore this file! Meant for testing in-built functions and logic
+# ================================================================
 
-# print(y.isalpha())
-
-# print(x)
-
-# x = x.capitalize()
-
-# print(x)
 
 def test1():
     thislist = ["Alice", "Betty", "Cecil"]
@@ -154,5 +148,17 @@ def test9():
     elif isinstance(result3, list):
         return{"type": "data", "rows": result3}
     
+def test10():
+    x = "abcDEFhiJk"
+    y = ""
 
-test6()
+    print(y.isalpha())
+
+    print(x)
+
+    x = x.capitalize()
+
+    print(x)
+
+
+# test()
