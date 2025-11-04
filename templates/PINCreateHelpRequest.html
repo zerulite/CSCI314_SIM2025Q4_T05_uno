@@ -19,7 +19,7 @@
     <body>
         <div class="container">
             <h1 class="mt-5">Create Help Request</h1>
-            <form method="POST" action="/create_help_request">
+            <form method="POST" action="/CreateReq">
                 <div class="form-group category-group">
                     <label for="title">Category</label>
                     <select
@@ -58,9 +58,9 @@
                         required
                     />
                 </div>
-                <button type="submit" class="btn btn-danger float-left">
+                <a class="btn btn-danger float-left" href="/ViewReq">
                     Cancel Request
-                </button>
+                </a>
                 <button type="submit" class="btn btn-primary float-right">
                     Submit Request
                 </button>
