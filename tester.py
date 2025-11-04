@@ -92,6 +92,11 @@ def test6():
     print(len(xDict))
     print(len(yDict))
 
+    if (yDict["1"] == "Alice"):
+        print("IT WORKS!")
+    else:
+        print("YIKES")
+
 def test7():
     
     x = 12
@@ -150,4 +155,4 @@ def test9():
         return{"type": "data", "rows": result3}
     
 
-test4()
+test6()

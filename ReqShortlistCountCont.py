@@ -8,7 +8,7 @@ class ReqShortlistCountCont:
         result = self.reqEntity.reqShortlistCount(userID)
 
         if isinstance(result, dict):
-            return {"type": "error", "message": result.get("message")}
+            return {"type": "alert", "message": result.get("message")}
         elif isinstance(result, list):
             return {"type": "data", "rows": result}
         else:
