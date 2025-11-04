@@ -67,11 +67,15 @@ class Request:
     
     # Returns all requests made by this user from Request table in a list(tuples)
     def viewReq(self, userID: str):
-        sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
-        FROM Request
-        WHERE userID = %s"""
-        values = (userID,)
-        return self.db.fetch(sql, values)
+        # Check if any request(s) exists under this user
+        if self.doesUserHaveReq():
+            sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
+            FROM Request
+            WHERE userID = %s"""
+            values = (userID,)
+            return self.db.fetch(sql, values)
+        else:
+            return {"message": "User does not have any requests."}
     
     # Update a specified request's info from the table
     def updateReq(self, requestID: str, reqDescription: str, helpNeededDate: str, helpNeededTime: str, reqStatus: str, category: str, userID: str):        
@@ -175,27 +179,40 @@ class Request:
     
     # Returns nested list of requestID/viewCount tuples of all request associated with userID
     def reqViewCount(self, userID: str):
-        sql = """SELECT requestID, viewCount
-        FROM Request
-        WHERE userID = %s"""
-        values = (userID,)
-        return self.db.fetch(sql, values)
+        # Check if any request(s) exists under this user
+        if self.doesUserHaveReq():
+            sql = """SELECT requestID, viewCount
+            FROM Request
+            WHERE userID = %s"""
+            values = (userID,)
+            return self.db.fetch(sql, values)
+        else:
+            return {"message": "User does not have any requests."}
     
     # Returns nested list of requestID/shortlistCount tuples of all request associated with userID
     def reqShortlistCount(self, userID: str):
-        sql = """"SELECT requestID, shortlistCount
-        FROM Request
-        WHERE userID = %s"""
-        values = (userID,)
-        return self.db.fetch(sql, values)
+        # Check if any request(s) exists under this user
+        if self.doesUserHaveReq():
+            sql = """"SELECT requestID, shortlistCount
+            FROM Request
+            WHERE userID = %s"""
+            values = (userID,)
+            return self.db.fetch(sql, values)
+        else:
+            return {"message": "User does not have any requests."}
     
     # Returns nested list of all requests that have the 'Completed' status associated with userID
-    def viewCompletedReq(self, userID: str):
+    def viewCompletedReq(self, userID: str):    
         sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
         FROM Request
         WHERE reqStatus = %s AND userID = %s"""
         values = ('Completed', userID)
-        return self.db.fetch(sql, values)
+        result = self.db.fetch(sql, values)
+
+        if len(result):
+            return result
+        else:
+            return {"message": "User does not have any completed requests."}
     
     # Find a specified 'Completed' request's info from the table
     def searchCompletedReq(self, requestID: str, userID: str):
@@ -221,6 +238,14 @@ class Request:
         values = ('Completed', requestID, userID)
         return self.db.fetch(sql, values)
     
+    # Checks if userID has any requests associated with it
+    # Returns 0 is none found, returns x (where x > 0) if found; Can be used as 0 = False, x = True
+    def doesUserHaveReq(self, userID: str):
+        sql = """SELECT * FROM Request WHERE userID = %s"""
+        values = (userID,)
+        result = self.db.fetch(sql, values)
+        return len(result)
+    
     # Specifically used for requestID since the table stores it as an int but html takes in as str
     # Returns requestID converted in int if tests pass, False if test fails
     @staticmethod
@@ -237,7 +262,7 @@ class Request:
         values = (requestID, userID)
         result = self.db.fetch(sql, values)
         if len(result) == 0:
-            # Didnt find a matching requestID + userID pair
+            # Didnt find a matching requestID/userID pair
             return False
         else:
             return True
