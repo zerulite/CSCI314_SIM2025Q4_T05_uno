@@ -139,4 +139,15 @@ def test8():
     else:
         print("FALSE!")
 
-test7()
+def test9():
+    result = {"message": "TEST"}
+    result2 = [("1", "Alice"), ("2", "Betty")]
+    result3 = []
+
+    if isinstance(result3, dict):
+        return {"type": "error", "message": result3.get("message")}
+    elif isinstance(result3, list):
+        return{"type": "data", "rows": result3}
+    
+
+test4()
