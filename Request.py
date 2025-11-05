@@ -89,3 +89,80 @@ class Request:
             "LIMIT %s OFFSET %s"
         )
         return self.db.fetch(sql, (int(limit), int(offset)))
+    
+    #Shortlist Requests
+    def add_to_shortlist(self, request_id: str, csr_user_id: str) -> bool:
+        sql = """
+            INSERT IGNORE INTO RequestShortlist (requestID, userID)
+            VALUES (%s, %s)
+        """
+        params = (str(request_id), str(csr_user_id))
+        affected = self.db.execute(sql, params)
+        return affected > 0
+    
+    #Search Shorlist Requests
+    def search_shortlisted(
+        self,
+        csr_user_id: str,
+        requestID=None,
+        request=None,
+        date=None,
+        time=None,
+        category=None,
+        userID=None,
+        completed=None,
+        limit: int = 50,
+        offset: int = 0,
+    ):
+        sql = [
+            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed",
+            "FROM Request r",
+            "INNER JOIN RequestShortlist s ON s.requestID = r.requestID",
+            "WHERE s.userID = %s",
+        ]
+        params = [csr_user_id]
+
+        if requestID:
+            sql.append("AND r.requestID = %s")
+            params.append(requestID)
+
+        if request is not None and request != "":
+            sql.append("AND r.request LIKE %s")
+            params.append(f"%{request}%")
+
+        if date:
+            sql.append("AND r.date = %s")
+            params.append(date)
+
+        if time:
+            sql.append("AND r.time = %s")
+            params.append(time)
+
+        if category:
+            sql.append("AND r.category LIKE %s")
+            params.append(f"%{category}%")
+
+        if userID:
+            sql.append("AND r.userID LIKE %s")
+            params.append(f"%{userID}%")
+
+        if completed is not None:
+            sql.append("AND (r.completed = %s OR (r.completed IS NULL AND %s = ''))")
+            params.extend([completed, completed])
+
+        sql.append("ORDER BY r.requestID LIMIT %s OFFSET %s")
+        params.extend([int(limit), int(offset)])
+
+        return self.db.fetch(" ".join(sql), tuple(params))
+    
+    #View Shortlisted Requests
+    def view_shortlist(self, csr_user_id: str, limit=100, offset=0):
+        sql = (
+            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "FROM `Request` r "
+            "INNER JOIN `RequestShortlist` s ON s.requestID = r.requestID "
+            "WHERE s.userID = %s "
+            "ORDER BY r.date, r.time, r.requestID "
+            "LIMIT %s OFFSET %s"
+        )
+        return self.db.fetch(sql, (csr_user_id, int(limit), int(offset)))
