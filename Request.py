@@ -166,3 +166,42 @@ class Request:
             "LIMIT %s OFFSET %s"
         )
         return self.db.fetch(sql, (csr_user_id, int(limit), int(offset)))
+    
+    #Search History
+    def search_history(self, **kwargs):
+        base = (
+            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "FROM `Request` r "
+            "LEFT JOIN `UserAccount` u ON u.userID = r.userID "
+            "WHERE 1=1"
+        )
+        params = []
+        base += " AND r.completed = %s"
+        params.append("Yes")
+
+        for field in ["requestID", "request", "date", "time", "category", "userID"]:
+            value = kwargs.get(field)
+            if value is not None and value != "":
+                if field == "request":
+                    base += f" AND r.{field} LIKE %s"
+                    params.append(f"%{value}%")
+                else:
+                    base += f" AND r.{field} = %s"
+                    params.append(value)
+
+        limit = int(kwargs.get("limit", 50))
+        offset = int(kwargs.get("offset", 0))
+        sql = f"{base} LIMIT %s OFFSET %s"
+        params.extend([limit, offset])
+        return self.db.fetch(sql, params)
+    
+    #View History
+    def view_history(self, limit=100, offset=0):
+        sql = (
+            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "FROM `Request` r "
+            "WHERE r.completed = %s "
+            "ORDER BY r.date, r.time, r.requestID "
+            "LIMIT %s OFFSET %s"
+        )
+        return self.db.fetch(sql, ("Yes", int(limit), int(offset)))
