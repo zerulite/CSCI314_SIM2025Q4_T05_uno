@@ -20,14 +20,28 @@
     <body>
         <h1 class="container mt-5 text-center">My Service Requests Shortlists</h1>
         <div class="container text-center">
-            <div class="row mt-5">
-                <div class="col title-header">Service</div>
-                <div class="col title-header">Shortlist Count</div>
-            </div>
-            {% for req in requests %}
-            <div class="row mt-3">
-                <div class="col">{{ req.description }}</div>
-                <div class="col">{{ req.shortlist_count }}</div>
+            <table class="table mt-2">
+                <thead>
+                    <tr>
+                        <th scope="col">Request Description</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Shortlist Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for row in result%}
+                    <tr>
+                        <td>{{row[1]}}</td>
+                        <td>{{row[2]}}</td>
+                        <td>{{row[3]}}</td>
+                        <td>{{row[7]}}</td>
+                        <td>{{row[6]}}</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
         </div>
     </body>
 </html>
