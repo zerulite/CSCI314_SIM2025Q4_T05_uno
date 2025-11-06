@@ -93,12 +93,12 @@ class UserProfile:
         # Normalize case
         profileState = profileState.lower()
 
-        # Check if the user exists
+        # Check if the profile is active
         check_sql = "SELECT profileState FROM UserProfile WHERE profile = %s"
         result = self.db.fetch(check_sql, (profile,))
         
         if not result:
-            return {"message": f"User '{profile}' not found."}
+            return {"message": f"Profile '{profile}' not active."}
 
         # Current state in the database
         current_state = result[0]['profileState'].lower()
