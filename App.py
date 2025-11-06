@@ -108,8 +108,11 @@ def deleteReq():
     # if not userID:
     #     return redirect(url_for('login'))
 
+    print("first")
+
     if request.method == 'POST':
         requestID = request.form.get('requestID', '').strip()
+        print(requestID)
 
         response = controller.deleteReqCont(requestID, userID)
 
@@ -119,6 +122,8 @@ def deleteReq():
         elif response["type"] == "data":
             # Should not reach here since no data should be returned
             result = response["rows"]
+        
+        print(result)
 
     return render_template('deleteRequest.html', result=result)
 

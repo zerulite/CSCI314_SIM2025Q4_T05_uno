@@ -41,7 +41,11 @@
                         <td>{{result[7]}}</td>
                         <td>
                             <a class="btn btn-primary">Update Request</a>
-                            <a class="btn btn-danger" href="/DeleteReq" name="requestID" value={{result[0]}}>Delete Request</a>
+                            <form method="POST" action="/DeleteReq" style="display:inline;">
+                                <input type="hidden" name="requestID" value="{{ result[0] }}">
+                                <button type="submit" class="btn btn-danger">Delete Request</button>
+                            </form>
+                            
                         </td>
                     </tr>
                     {%endfor%}
