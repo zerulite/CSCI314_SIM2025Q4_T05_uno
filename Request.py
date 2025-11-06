@@ -39,8 +39,8 @@ class Database:
         print("Database connection closed.")
 
 class Request:
-    def __init__(self, db):
-        self.db = db
+    def __init__(self):
+        self.db = Database()
 
     # ============
     # MAIN METHODS

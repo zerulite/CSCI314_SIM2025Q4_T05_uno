@@ -10,15 +10,27 @@ from ReqShortlistCountCont import *
 from ViewCompletedReqCont import *
 from SearchCompletedReqCont import *
 
+app = Flask(__name__)
+
+userID = "U001"
+
+@app.route("/main")
+def home():
+    return render_template("helloworld.html")
+
+@app.route("/ViewCreateRequestPg")
+def viewCreateReq():
+    return render_template("createRequest.html")
+
 @app.route('/CreateReq', methods=['GET', 'POST'])
 def createReq():
     controller = CreateReqCont()
     result = None
 
     # Get userID from session
-    userID = session.get('userID')
-    if not userID:
-        return redirect(url_for('login'))
+    # userID = session.get('userID')
+    # if not userID:
+    #     return redirect(url_for('login'))
 
     if request.method == 'POST':
         reqDescription = request.form.get('reqDescription', '').strip()
@@ -35,7 +47,7 @@ def createReq():
             # Should not reach here since no data should be returned
             result = response["rows"]
 
-    return render_template('createRequest.html', result=result)
+    return render_template('createRequestSuccess.html', result=result)
 
 @app.route('/ViewReq', methods=['GET'])
 def viewReq():
@@ -43,9 +55,9 @@ def viewReq():
     result = None
     
     # Get userID from session
-    userID = session.get('userID')
-    if not userID:
-        return redirect(url_for('login'))
+    # userID = session.get('userID')
+    # if not userID:
+    #     return redirect(url_for('login'))
 
     response = controller.viewReqCont(userID)
 
@@ -63,9 +75,9 @@ def updateReq():
     result = None
 
     # Get userID from session
-    userID = session.get('userID')
-    if not userID:
-        return redirect(url_for('login'))
+    # userID = session.get('userID')
+    # if not userID:
+    #     return redirect(url_for('login'))
 
     if request.method == 'POST':
         requestID = request.form.get('requestID', '').strip()
@@ -92,9 +104,9 @@ def deleteReq():
     result = None
 
     # Get userID from session
-    userID = session.get('userID')
-    if not userID:
-        return redirect(url_for('login'))
+    # userID = session.get('userID')
+    # if not userID:
+    #     return redirect(url_for('login'))
 
     if request.method == 'POST':
         requestID = request.form.get('requestID', '').strip()
@@ -116,9 +128,9 @@ def searchReq():
     result = None
 
     # Get userID from session
-    userID = session.get('userID')
-    if not userID:
-        return redirect(url_for('login'))
+    # userID = session.get('userID')
+    # if not userID:
+    #     return redirect(url_for('login'))
 
     if request.method == 'POST':
         requestID = request.form.get('requestID', '').strip()
@@ -139,9 +151,9 @@ def reqViewCount():
     result = None
 
     # Get userID from session
-    userID = session.get('userID')
-    if not userID:
-        return redirect(url_for('login'))
+    # userID = session.get('userID')
+    # if not userID:
+    #     return redirect(url_for('login'))
 
     response = controller.reqViewCountCont(userID)
 
@@ -159,9 +171,9 @@ def reqShortlistCount():
     result = None
 
     # Get userID from session
-    userID = session.get('userID')
-    if not userID:
-        return redirect(url_for('login'))
+    # userID = session.get('userID')
+    # if not userID:
+    #     return redirect(url_for('login'))
 
     response = controller.reqShortlistCountCont(userID)
 
@@ -179,9 +191,9 @@ def viewCompletedReq():
     result = None
 
     # Get userID from session
-    userID = session.get('userID')
-    if not userID:
-        return redirect(url_for('login'))
+    # userID = session.get('userID')
+    # if not userID:
+    #     return redirect(url_for('login'))
 
     response = controller.viewCompletedReqCont(userID)
 
@@ -199,9 +211,9 @@ def searchCompletedReq():
     result = None
 
     # Get userID from session
-    userID = session.get('userID')
-    if not userID:
-        return redirect(url_for('login'))
+    # userID = session.get('userID')
+    # if not userID:
+    #     return redirect(url_for('login'))
 
     if request.method == 'POST':
         requestID = request.form.get('requestID', '').strip()
@@ -215,3 +227,7 @@ def searchCompletedReq():
             result = response["rows"]
 
     return render_template('searchCompletedRequest.html', result=result)
+
+#Main
+if __name__ == '__main__':
+    app.run()
