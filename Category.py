@@ -10,10 +10,10 @@ class Database:
             self.connection = mysql.connector.connect(
                 host="localhost",
                 user="root",
-                password="", #Change this if needed
+                password="Splatoon2!", #Change this if needed
                 database="csit314"
             )
-            self.cursor = self.connection.cursor()
+            self.cursor = self.connection.cursor(dictionary=True)
             print("Database connected successfully!")
         except mysql.connector.Error as err:
             print(f"Database connection error: {err}")
@@ -39,3 +39,94 @@ class Database:
 class Category:
     def __init__(self):
         self.db = Database()
+
+    #Create Category
+    def create_category(self, category, description):
+        #Check if any field is empty
+        if not all([category, description]):
+            return {"message": "Failed to create category: all fields are required."}
+
+        #Check if category already exists
+        check_user_sql = "SELECT * FROM Category WHERE category = %s"
+        if self.db.fetch(check_user_sql, (category,)):
+            return {"message": f"Category {category} already exists."}
+
+        #Insert new category
+        sql = """INSERT INTO Category
+                (category, description)
+                VALUES (%s, %s)"""
+        values = (category, description)
+        self.db.execute(sql, values)
+        return {"message": f"Category {category} successfully created."}
+
+
+    # View Account
+    def view_category(self, category):
+        sql = "SELECT * FROM Category WHERE category = %s"
+        result = self.db.fetch(sql, (category,))
+        if not result:
+            return None
+        return result[0]
+
+    # List all Accounts
+    def list_category(self):
+        sql = "SELECT category, description FROM Category"
+        return self.db.fetch(sql)
+
+    #Update Category
+    def update_category(self, category, description):
+        check_sql = "SELECT * FROM Category WHERE userID = %s"
+        if self.db.fetch(check_sql, (category,)):
+            sql = """UPDATE Category
+                     SET description=%s
+                     WHERE category=%s"""
+            values = (category, description)
+            self.db.execute(sql, values)
+            return {"message": f"Category {category} updated successfully."}
+        else:
+            return {"message": f"Category {category} update failed — not found."}
+
+    #Delete Category
+    def delete_category(self, category):
+            if not category:
+                return {"success": False, "message": "Category is required."}
+
+            check_sql = "SELECT category, description FROM Category WHERE category = %s"
+            result = self.db.fetch(check_sql, (category,))
+
+            if not result:
+                return {"success": False, "message": f"Category '{category}' does not exist."}
+
+            description = result[0]["description"]
+
+            delete_sql = "DELETE FROM Category WHERE category = %s"
+            try:
+                self.db.cursor.execute(delete_sql, (category,))
+                self.db.connection.commit()
+                return {
+                    "success": True,
+                    "message": f"Category '{category}' with description '{description}' deleted successfully."
+                }
+            except Exception as e:
+                return {"success": False, "message": str(e)}
+            
+    #Search Category
+    def search_category(self, **kwargs):
+        # Remove empty values
+        search_fields = {k: v for k, v in kwargs.items() if v}
+
+        # Return empty list if nothing to search
+        if not search_fields:
+            return []
+
+        query = "SELECT * FROM Category WHERE 1=1"
+        params = []
+
+        # Loop over individual fields
+        for field in ['category', 'description']:
+            value = search_fields.get(field)
+            if value:
+                query += f" AND {field} LIKE %s"
+                params.append(f"%{value}%")
+
+        return self.db.fetch(query, params)
