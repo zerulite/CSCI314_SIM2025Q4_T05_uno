@@ -21,5 +21,30 @@
             <h1 class="mt-5">View Requests</h1>
             <a href="/ViewCreateRequestPg" class="btn btn-primary">Create Request</a>
         </div>
+        
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Request Description</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for result in results%}
+                    <tr>
+                        <td>{{result[1]}}</td>
+                        <td>{{result[2]}}</td>
+                        <td>{{result[3]}}</td>
+                        <td>{{result[8]}}</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+            
+        </div>
+        
     </body>
 </html>

@@ -67,7 +67,7 @@ def viewReq():
     elif response["type"] == "data":
         result = response["rows"]
 
-    return render_template('viewRequest.html', result=result)
+    return render_template('viewRequest.html', results=result)
 
 @app.route('/UpdateReq', methods=['GET', 'POST'])
 def updateReq():
