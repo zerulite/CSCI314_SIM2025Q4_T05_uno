@@ -269,6 +269,15 @@ def testIncShortlistCount():
 
     db.close()
 
+def testIsCatValid():
+    db = Database()
+    request_entity = Request(db)
+
+    result = request_entity.isCategoryValid("Academic")
+    print(result)
+
+    db.close()
+
 # def testTemplate():
 #     db = Database()
 #     request_entity = Request(db)
@@ -317,7 +326,9 @@ def main():
     # testSearchCompReqNeg()
 
     # testIncViewCount()
-    testIncShortlistCount()
+    # testIncShortlistCount()
+
+    testIsCatValid()
 
     pass
 

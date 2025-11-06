@@ -62,6 +62,10 @@ class Request:
         if not self.isTimeValid(helpNeededTime):
             return {"message": "Failed to create request: time field incorrectly filled."}
         
+        # Checks category input exists in database
+        if not self.isCategoryValid(category):
+            return {"message": "Failed to create request: category field incorrectly filled."}
+        
         # Inserts new request
         sql = """INSERT INTO Request
         (reqDescription, helpNeededDate, helpNeededTime, category, userID)
@@ -115,6 +119,10 @@ class Request:
                 reqStatus = result
             else:
                 return {"message": "Failed to update request: status field incorrectly filled."}
+            
+        # Checks category input exists in database
+        if not self.isCategoryValid(category):
+            return {"message": "Failed to create request: category field incorrectly filled."}
             
         # Filters out empty arguments
         updatesRaw = {"reqDescription": reqDescription, 
@@ -313,6 +321,21 @@ class Request:
             if word == statusInput:
                 testChecker = word
         return testChecker
+    
+    def isCategoryValid(self, category: str):
+        if not category.isalpha():
+            return False
+        else:
+            category = category.capitalize()
+        sql = """SELECT category FROM category"""
+        result = self.db.fetch(sql)
+        for cat in result:
+            if cat[0] == category:
+                return True
+            
+        return False
+
+        # print(result)
     
 
     # =================
