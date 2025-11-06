@@ -29,11 +29,15 @@
 <body>
     <h2>User Login</h2>
 
-    {% if message %}
-        <div class="form-message {% if 'successfully' in message %}success{% else %}error{% endif %}">
-            <p>{{ message }}</p>
-        </div>
-    {% endif %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="form-message {% if category == 'success' %}success{% else %}error{% endif %}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
     <form action="/login" method="POST" class="login-form">
         <div class="form-row">
