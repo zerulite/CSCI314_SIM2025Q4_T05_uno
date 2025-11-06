@@ -1,7 +1,6 @@
 CREATE TABLE Request (
     requestID INT PRIMARY KEY AUTO_INCREMENT,
     reqDescription VARCHAR(10000),
-    reqCreatedOn DATETIME DEFAULT CURRENT_TIMESTAMP,
     helpNeededDate DATE,
     helpNeededTime TIME,
     reqStatus VARCHAR(20) DEFAULT 'Open',
