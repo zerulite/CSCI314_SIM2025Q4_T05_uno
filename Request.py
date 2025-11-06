@@ -48,7 +48,7 @@ class Request:
 
     # Create row in Request table
     def createReq(self, reqDescription: str, helpNeededDate: str, helpNeededTime: str, category: str, userID: str):
-        # Not included columns & reason - requestID (auto-increment PK), reqCreatedOn (DEFAULT CURRENT_DATE), viewCount & shortlistCount (DEFAULT 0), reqStatus (DEFAULT 'Open')
+        # Not included columns & reason - requestID (auto-increment PK), viewCount & shortlistCount (DEFAULT 0), reqStatus (DEFAULT 'Open')
 
         # Checks that all fields are filled
         if not all([reqDescription, helpNeededDate, helpNeededTime, category, userID]):
@@ -81,7 +81,7 @@ class Request:
     def viewReq(self, userID: str):
         # Check if any request(s) exists under this user
         if self.doesUserHaveReq(userID):
-            # * covers requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer    
+            # * covers requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer    
             sql = """SELECT * 
             FROM Request
             WHERE userID = %s"""
@@ -191,7 +191,7 @@ class Request:
                 return {"message": f"Failed to find request: Request #{requestID} not found for user({userID})."}
         
         # Finds request
-        # * covers requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer    
+        # * covers requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer    
         sql = """SELECT *
         FROM Request
         WHERE requestID = %s AND userID = %s"""
@@ -202,7 +202,7 @@ class Request:
     def reqViewCount(self, userID: str):
         # Check if any request(s) exists under this user
         if self.doesUserHaveReq(userID):
-            sql = """SELECT requestID, viewCount
+            sql = """SELECT *
             FROM Request
             WHERE userID = %s"""
             values = (userID,)
@@ -214,7 +214,7 @@ class Request:
     def reqShortlistCount(self, userID: str):
         # Check if any request(s) exists under this user
         if self.doesUserHaveReq(userID):
-            sql = """SELECT requestID, shortlistCount
+            sql = """SELECT *
             FROM Request
             WHERE userID = %s"""
             values = (userID,)
@@ -224,7 +224,7 @@ class Request:
     
     # Returns nested list of all requests that have the 'Completed' status associated with userID
     def viewCompletedReq(self, userID: str):
-        # * covers requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer    
+        # * covers requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer    
         sql = """SELECT * 
         FROM Request
         WHERE reqStatus = %s AND userID = %s"""
@@ -254,7 +254,7 @@ class Request:
                 return {"message": f"Failed to find request: requestID {requestID} not found for user {userID}."}
         
         # Finds 'Completed' request
-        # * covers: requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer
+        # * covers: requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer
         sql = """SELECT * 
         FROM Request
         WHERE reqStatus = %s AND requestID = %s AND userID = %s"""
