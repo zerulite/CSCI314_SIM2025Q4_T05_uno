@@ -22,6 +22,15 @@ def home():
 def viewCreateReq():
     return render_template("createRequest.html")
 
+@app.route("/UpdateReqPg")
+def viewUpdateReq():
+    requestID = request.args.get('requestID', '').strip()
+    reqStatus = request.args.get('reqStatus', '').strip()
+
+    return render_template("updateRequest.html",
+                           requestID=requestID,
+                           reqStatus=reqStatus)
+
 @app.route('/CreateReq', methods=['GET', 'POST'])
 def createReq():
     controller = CreateReqCont()
@@ -86,6 +95,8 @@ def updateReq():
         helpNeededTime = request.form.get('helpNeededTime', '').strip()
         reqStatus = request.form.get('reqStatus', '').strip()
         category = request.form.get('category', '').strip()
+
+        print(requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, category)
         
         response = controller.updateReqCont(requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, userID)
 
@@ -96,7 +107,7 @@ def updateReq():
             # Should not reach here since no data should be returned
             result = response["rows"]
 
-    return render_template('updateRequest.html', result=result)
+    return render_template('createRequestSuccess.html', result=result)
 
 @app.route('/DeleteReq', methods=['GET', 'POST'])
 def deleteReq():

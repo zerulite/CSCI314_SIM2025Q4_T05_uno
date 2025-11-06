@@ -20,6 +20,9 @@
         <div class="container">
             <h1 class="mt-5">Update Help Request</h1>
             <form method="POST" action="/UpdateReq">
+                <input type="hidden" name="requestID" value="{{ requestID }}">
+                <input type="hidden" name="reqStatus" value="{{ reqStatus }}">
+                
                 <div class="form-group category-group">
                     <label for="title">Category</label>
                     <select
@@ -31,8 +34,8 @@
                         <option value="" disabled selected>
                             Select a category
                         </option>
-                        <option value="Wheelchair">Wheelchair</option>
-                        <option value="Park">Park</option>
+                        <option value="Financial">Financial</option>
+                        <option value="Academic">Academic</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -40,8 +43,8 @@
                     <label for="title">Description</label>
                     <textarea
                         class="form-control"
-                        id="description"
-                        name="description"
+                        id="reqDescription"
+                        name="reqDescription"
                         rows="4"
                         placeholder="Describe your help request..."
                         required
@@ -52,8 +55,9 @@
                     <input
                         type="date"
                         class="form-control"
-                        id="date"
-                        name="date"
+                        id="helpNeededDate"
+                        name="helpNeededDate"
+                        placeholder="Enter date"
                         required
                     />
                 </div>
@@ -62,8 +66,8 @@
                     <input
                         type="time"
                         class="form-control"
-                        id="time"
-                        name="time"
+                        id="helpNeededTime"
+                        name="helpNeededTime"
                         required
                     />
                 </div>
