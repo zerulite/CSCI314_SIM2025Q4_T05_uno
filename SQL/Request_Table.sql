@@ -9,6 +9,7 @@ CREATE TABLE Request (
     shortlistCount INT DEFAULT 0,
     category VARCHAR(20),
     userID VARCHAR(20),
+    volunteer VARCHAR(30) NULL,
     FOREIGN KEY (category) REFERENCES Category(category),
     FOREIGN KEY (userID) REFERENCES UserAccount(userID)
 );

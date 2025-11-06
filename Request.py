@@ -81,7 +81,8 @@ class Request:
     def viewReq(self, userID: str):
         # Check if any request(s) exists under this user
         if self.doesUserHaveReq(userID):
-            sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer
+            # * covers requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer    
+            sql = """SELECT * 
             FROM Request
             WHERE userID = %s"""
             values = (userID,)
@@ -190,7 +191,8 @@ class Request:
                 return {"message": f"Failed to find request: Request #{requestID} not found for user({userID})."}
         
         # Finds request
-        sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
+        # * covers requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer    
+        sql = """SELECT *
         FROM Request
         WHERE requestID = %s AND userID = %s"""
         values = (requestID, userID)
@@ -221,8 +223,9 @@ class Request:
             return {"message": "Failed to view request: User does not have any requests."}
     
     # Returns nested list of all requests that have the 'Completed' status associated with userID
-    def viewCompletedReq(self, userID: str):    
-        sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
+    def viewCompletedReq(self, userID: str):
+        # * covers requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer    
+        sql = """SELECT * 
         FROM Request
         WHERE reqStatus = %s AND userID = %s"""
         values = ('Completed', userID)
@@ -251,7 +254,8 @@ class Request:
                 return {"message": f"Failed to find request: requestID {requestID} not found for user {userID}."}
         
         # Finds 'Completed' request
-        sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
+        # * covers: requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer
+        sql = """SELECT * 
         FROM Request
         WHERE reqStatus = %s AND requestID = %s AND userID = %s"""
         values = ('Completed', requestID, userID)
