@@ -1,0 +1,35 @@
+<h1>Weekly Report</h1>
+<form method="POST" action="/weeklyReport">
+    <label for="week_start">Select Week Start (Monday):</label>
+    <input type="date" name="week_start" id="week_start" required>
+    <button type="submit">Generate</button>
+</form>
+
+{% if report %}
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Request ID</th>
+            <th>Request</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Category</th>
+            <th>User</th>
+            <th>Completed</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in report %}
+        <tr>
+            <td>{{ r['Request ID'] }}</td>
+            <td>{{ r['Request'] }}</td>
+            <td>{{ r['Date'] }}</td>
+            <td>{{ r['Time'] }}</td>
+            <td>{{ r['Category'] }}</td>
+            <td>{{ r['User'] }}</td>
+            <td>{{ r['Completed'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
