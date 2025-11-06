@@ -55,12 +55,15 @@ class Request:
             return {"message": "Failed to create request: all fields are required."}
         
         # Checks date and time inputs
-        #Assuming date input follows format of DD/MM/YYYY and time input follows 24-hr format HH:MM
+        # Assuming date input follows format of YYYY-MM-DD and time input follows 24-hr format HH:MM
         if not self.isDateValid(helpNeededDate):
             return {"message": "Failed to create request: date field incorrectly filled."}
         
         if not self.isTimeValid(helpNeededTime):
             return {"message": "Failed to create request: time field incorrectly filled."}
+        
+        # Adjusts the time input to follow MySQL time datatype format
+        helpNeededTime = helpNeededTime + ":00"
         
         # Checks category input exists in database
         if not self.isCategoryValid(category):
@@ -78,7 +81,7 @@ class Request:
     def viewReq(self, userID: str):
         # Check if any request(s) exists under this user
         if self.doesUserHaveReq(userID):
-            sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID
+            sql = """SELECT requestID, reqDescription, reqCreatedOn, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer
             FROM Request
             WHERE userID = %s"""
             values = (userID,)
@@ -111,6 +114,9 @@ class Request:
         if len(helpNeededTime) != 0:
             if not self.isTimeValid(helpNeededTime):
                 return {"message": "Failed to update request: time field incorrectly filled."}
+            
+        # Adjusts the time input to follow MySQL time datatype format
+        helpNeededTime = helpNeededTime + ":00"
             
         # Checks reqStatus input
         if len(reqStatus) != 0:
@@ -290,11 +296,11 @@ class Request:
         else:
             return True
     
-    # Accepts date input following this format -> DD/MM/YYYY
+    # Accepts date input following this format -> YYYY-MM-DD
     @staticmethod
     def isDateValid(dateInput: str):
         try:
-            datetime.strptime(dateInput, "%d/%m/%Y")
+            datetime.strptime(dateInput, "%Y-%m-%d")
             return True
         except ValueError:
             return False
