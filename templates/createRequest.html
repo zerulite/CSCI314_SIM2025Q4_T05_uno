@@ -31,9 +31,9 @@
                         <option value="" disabled selected>
                             Select a category
                         </option>
-                        <option value="Financial">Financial</option>
-                        <option value="Academic">Academic</option>
-                        <option value="Other">Other</option>
+                        {%for category in categoryList%}
+                        <option value="{{category}}">{{category}}</option>
+                        {%endfor%}
                     </select>
                 </div>
                 <div class="form-group">

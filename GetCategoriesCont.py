@@ -12,4 +12,4 @@ class GetCategoriesCont:
         for cat in result:
             response.append(cat[0])
 
-        print(response)
+        return response

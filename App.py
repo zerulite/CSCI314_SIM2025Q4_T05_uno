@@ -19,12 +19,14 @@ userID = "U001"
 def home():
     return render_template("helloworld.html")
 
-@app.route("/ViewCreateRequestPg")
+@app.route("/ViewCreateRequestPg", methods=['GET'])
 def viewCreateReq():
     controller = GetCategoriesCont()
     categoryList = controller.getCategoriesCont()
+    print(categoryList)
 
     return render_template("createRequest.html", categoryList=categoryList)
+
 
 @app.route("/UpdateReqPg")
 def viewUpdateReq():
