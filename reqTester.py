@@ -6,13 +6,13 @@ def testCreate():
     request_entity= Request(db)
 
     # result = request_entity.createReq(reqDescription, helpNeededDate, helpNeededTime, category, userID)
-    result = request_entity.createReq("Need help moving furniture", "15/11/2025", "14:30", "Financial", "U001")
+    result = request_entity.createReq("Need help moving furniture", "2025-11-15", "14:30", "Financial", "U001")
     resultPrint(result)
 
-    result = request_entity.createReq("Looking for tutoring help", "16/11/2025", "10:00", "Academic", "U001")
+    result = request_entity.createReq("Looking for tutoring help", "2025-11-16", "10:00", "Academic", "U001")
     resultPrint(result)
 
-    result = request_entity.createReq("Need groceries delivered", "17/11/2025", "09:00", "Errand", "U001")
+    result = request_entity.createReq("Need groceries delivered", "2025-11-17", "09:00", "Errand", "U001")
     resultPrint(result)
 
     db.close()
@@ -299,7 +299,7 @@ def resultPrint(result):
         print("BUG!! ERROR!!")
 
 def main():
-    # testCreate()
+    testCreate()
     # testCreateNeg()
 
     # testView()
@@ -328,7 +328,7 @@ def main():
     # testIncViewCount()
     # testIncShortlistCount()
 
-    testIsCatValid()
+    # testIsCatValid()
 
     pass
 
