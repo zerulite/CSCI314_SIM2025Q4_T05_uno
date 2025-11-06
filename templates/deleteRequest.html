@@ -14,21 +14,10 @@
     <body>
         <div class="container d-flex flex-column align-items-center mt-5">
             <h1>Delete Request</h1>
-            <!-- <p class="mb-3">
-                Are you sure you would like to delete this request?
-            </p>
-
-            <form action="/deleteReq" method="post">
-                <div class="actions">
-                    <button type="submit" class="btn btn-danger">
-                        Confirm Delete
-                    </button>
-                    <a type="button" class="btn btn-primary" href="/viewReq">
-                        Cancel
-                    </a>
-                </div>
-            </form> -->
-            {{result}}
+            <div class="result">{{result}}</div>
+            <div class="btn-wrapper">
+                <a href="/ViewReq" class="btn btn-primary">Return to View Requests</a>
+            </div>
         </div>
     </body>
 </html>
