@@ -57,11 +57,11 @@ class UserAccount:
         if self.db.fetch(check_user_sql, (userID,)):
             return {"message": f"User {userID} already exists."}
         
-        # Check if user already exists
+        # Check if email already exists
         check_email_sql = "SELECT * FROM UserAccount WHERE email = %s"
         if self.db.fetch(check_email_sql, (email,)):
             return {"message": f"{email} already exists."}
-
+                
         # Insert new user
         sql = """INSERT INTO UserAccount
                 (userID, password, name, email, profile, userState)
@@ -158,6 +158,7 @@ class UserAccount:
 
         return self.db.fetch(query, params)
     
+    #Login
     def login(self, userID, password):
         # Check for missing fields
         if not userID or not password:
@@ -176,19 +177,26 @@ class UserAccount:
         if user["userState"].lower() == "inactive":
             return {"success": False, "message": "Your account is suspended."}
 
-        # Determine redirect based on profile
-        profile = user["profile"]
-        redirect_page = {
-            "CSR Representative": "csr_main",
-            "Platform Management": "platform_main",
-            "User Admin": "admin_main",
-            "Person In Need": "PIN_main"
-        }.get(profile, "dashboard")
-
+        # No redirect logic here anymore
         return {
             "success": True,
             "message": "Login successful.",
-            "user": user,
-            "redirect": redirect_page
+            "user": user
         }
+    
+    def check_profile(self, profile):
+        # Fetch the profile state
+        check_profile_sql = "SELECT profileState FROM UserProfile WHERE profile = %s"
+        result = self.db.fetch(check_profile_sql, (profile,))
+        
+        if not result:
+            return {"success": False, "message": f"Profile '{profile}' does not exist."}
+        
+        state = result[0]['profileState'].lower()
+        if state != 'active':
+            return {"success": False, "message": f"Profile '{profile}' is not active (current state: {state})."}
+        
+        # Profile exists and is active
+        return {"success": True, "message": f"Profile '{profile}' is active."}
+
 
