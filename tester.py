@@ -160,5 +160,9 @@ def test10():
 
     print(x)
 
+from GetCategoriesCont import *
+def test11():
+    x = GetCategoriesCont()
+    x.getCategoriesCont()
 
-# test()
+test11()

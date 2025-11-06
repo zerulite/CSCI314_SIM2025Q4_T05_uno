@@ -269,7 +269,7 @@ class Request:
 
     # ======================
     # PRIVATE HELPER METHODS
-    # ====================== 
+    # ======================
     
     # Checks if userID has any requests associated with it
     # Returns 0 is none found, returns x (where x > 0) if found; Can be used as 0 = False, x = True
@@ -345,7 +345,10 @@ class Request:
             
         return False
 
-        # print(result)
+    def getCategories(self):
+        sql = """SELECT category FROM category"""
+        result = self.db.fetch(sql)
+        return result
     
 
     # =================

@@ -3,7 +3,7 @@ from Request import Database, Request
 # Adds 3 valid rows into Request table
 def testCreate():
     db = Database()
-    request_entity= Request(db)
+    request_entity= Request()
 
     # result = request_entity.createReq(reqDescription, helpNeededDate, helpNeededTime, category, userID)
     result = request_entity.createReq("Need help moving furniture", "2025-11-15", "14:30", "Financial", "U001")
@@ -20,7 +20,7 @@ def testCreate():
 # Negative test - tests if alerts are returned when erroneous input/data is entered by user
 def testCreateNeg():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.createReq("Negative test 1", "32/11/2025", "14:30", "NegTest", "U001")
     resultPrint(result)
@@ -36,7 +36,7 @@ def testCreateNeg():
 # Receives the 3 valid rows made by testCreate()
 def testView():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.viewReq("U001")
     resultPrint(result)
@@ -46,7 +46,7 @@ def testView():
 # Negative test - tests if alert is returned when user has no requests
 def testViewNeg():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.viewReq("U002")
     resultPrint(result)
@@ -56,7 +56,7 @@ def testViewNeg():
 # Receives row according to requestID, userID
 def testSearch():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.searchReq("1", "U001")
     resultPrint(result)
@@ -66,7 +66,7 @@ def testSearch():
 # Negative test - tests if alert is returned when erroneous inputs are entered by user
 def testSearchNeg():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.searchReq("", "U001")
     resultPrint(result)
@@ -82,7 +82,7 @@ def testSearchNeg():
 # Updates row(s) accordingly
 def testUpdate():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     # updateReq(requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, userID)
 
@@ -106,7 +106,7 @@ def testUpdate():
 # Negative test - tests if alert is returned when errorneous inputs are entered by user
 def testUpdateNeg():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     # Nothing to update - requestID still needed
     result = request_entity.updateReq("1", "", "", "", "", "", "U001")
@@ -132,7 +132,7 @@ def testUpdateNeg():
 # !!! Not running this as the PK will change !!!
 def testDelete():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     # Adds a new row to test deletion
     result = request_entity.createReq("To test deleteReq", "15/11/2025", "14:30", "Financial", "U001")
@@ -146,7 +146,7 @@ def testDelete():
 # Negative test - tests if alert is returned when errorneous inputs are entered by user
 def testDeleteNeg():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.deleteReq("", "U001")
     resultPrint(result)
@@ -162,7 +162,7 @@ def testDeleteNeg():
 # Receives requestID, viewCount associated with this userID
 def testViewCount():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.reqViewCount("U001")
     resultPrint(result)
@@ -172,7 +172,7 @@ def testViewCount():
 # Negative test - tests if alert is returned when user has no requests
 def testViewCountNeg():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.reqViewCount("U002")
     resultPrint(result)
@@ -182,7 +182,7 @@ def testViewCountNeg():
 # Receives requestID, shortlistCount associated with this userID
 def testShortlistCount():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.reqShortlistCount("U001")
     resultPrint(result)
@@ -192,7 +192,7 @@ def testShortlistCount():
 # Negative test - tests if alert is returned when user has no requests
 def testShortlistCountNeg():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.reqShortlistCount("U002")
     resultPrint(result)
@@ -202,7 +202,7 @@ def testShortlistCountNeg():
 # Receives userID's request(s) WHERE reqStatus = 'Completed'
 def testViewCompReq():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.viewCompletedReq("U001")
     resultPrint(result)
@@ -212,7 +212,7 @@ def testViewCompReq():
 # Negative test - tests if alert is returned when user has no 'Completed' requests
 def testViewCompReqNeg():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.viewCompletedReq("U002")
     resultPrint(result)
@@ -222,7 +222,7 @@ def testViewCompReqNeg():
 # Receives 'Completed' requests according to requestID, userID
 def testSearchCompReq():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.searchCompletedReq("1", "U001")
     resultPrint(result)
@@ -231,7 +231,7 @@ def testSearchCompReq():
 
 def testSearchCompReqNeg():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.searchCompletedReq("", "U001")
     resultPrint(result)
@@ -249,7 +249,7 @@ def testSearchCompReqNeg():
 
 def testIncViewCount():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     request_entity.incViewCount("1", "U001")
 
@@ -260,7 +260,7 @@ def testIncViewCount():
 
 def testIncShortlistCount():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     request_entity.incShortlistCount("1", "U001")
 
@@ -271,16 +271,25 @@ def testIncShortlistCount():
 
 def testIsCatValid():
     db = Database()
-    request_entity = Request(db)
+    request_entity = Request()
 
     result = request_entity.isCategoryValid("Academic")
     print(result)
 
     db.close()
 
+def testGetCategories():
+    db = Database()
+    request_entity = Request()
+
+    result = request_entity.getCategories()
+    print(result)
+
+    db.close()
+
 # def testTemplate():
 #     db = Database()
-#     request_entity = Request(db)
+#     request_entity = Request()
 
 #     result = request_entity.createReq()
 #     resultPrint(result)
@@ -299,7 +308,7 @@ def resultPrint(result):
         print("BUG!! ERROR!!")
 
 def main():
-    testCreate()
+    # testCreate()
     # testCreateNeg()
 
     # testView()
@@ -329,6 +338,7 @@ def main():
     # testIncShortlistCount()
 
     # testIsCatValid()
+    testGetCategories()
 
     pass
 

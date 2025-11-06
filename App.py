@@ -9,6 +9,7 @@ from ReqViewCountCont import *
 from ReqShortlistCountCont import *
 from ViewCompletedReqCont import *
 from SearchCompletedReqCont import *
+from GetCategoriesCont import *
 
 app = Flask(__name__)
 
@@ -20,16 +21,23 @@ def home():
 
 @app.route("/ViewCreateRequestPg")
 def viewCreateReq():
-    return render_template("createRequest.html")
+    controller = GetCategoriesCont()
+    categoryList = controller.getCategoriesCont()
+
+    return render_template("createRequest.html", categoryList=categoryList)
 
 @app.route("/UpdateReqPg")
 def viewUpdateReq():
     requestID = request.args.get('requestID', '').strip()
     reqStatus = request.args.get('reqStatus', '').strip()
 
+    controller = GetCategoriesCont()
+    categoryList = controller.getCategoriesCont()
+
     return render_template("updateRequest.html",
                            requestID=requestID,
-                           reqStatus=reqStatus)
+                           reqStatus=reqStatus,
+                           categoryList=categoryList)
 
 @app.route('/CreateReq', methods=['GET', 'POST'])
 def createReq():
