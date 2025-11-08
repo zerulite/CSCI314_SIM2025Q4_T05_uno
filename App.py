@@ -167,7 +167,7 @@ def viewAReq():
     elif response["type"] == "data":
         result = response["rows"]
 
-    return render_template('viewARequest.html', results=result)
+    return render_template('viewARequest.html', result=result)
 
 @app.route('/SearchReq', methods=['GET', 'POST'])
 def searchReq():
