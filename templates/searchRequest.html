@@ -121,16 +121,15 @@
                                 <tr>
                                     <td>{{ row[0] }}</td>
                                     <td>{{ row[1] }}</td>
-                                    <td>{{ row[2] }}</td>
                                     <td>
-                                        {% if row[3].strftime is defined %} {{
-                                        row[3].strftime('%Y-%m-%d') }} {% else
-                                        %} {{ row[3] }} {% endif %}
+                                        {% if row[2].strftime is defined %} {{
+                                        row[2].strftime('%Y-%m-%d') }} {% else
+                                        %} {{ row[2] }} {% endif %}
                                     </td>
                                     <td>
-                                        {% if row[4].strftime is defined %} {{
-                                        row[4].strftime('%H:%M') }} {% else %}
-                                        {{ (row[4] or '')[:5] }} {% endif %}
+                                        {% if row[3].strftime is defined %} {{
+                                        row[3].strftime('%H:%M') }} {% else %}
+                                        {{ (row[3] or '')[:5] }} {% endif %}
                                     </td>
                                     <td>{{ row[7] or '' }}</td>
                                 </tr>
