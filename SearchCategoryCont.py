@@ -5,7 +5,7 @@ class SearchCategory:
         self.category = Category()
 
 
-    def search_category(self, search_fields: dict):
+    def searchCategory(self, search_fields: dict):
         #remove empty values
         search_fields = {k: v for k, v in search_fields.items() if v}
         # Call the entity method

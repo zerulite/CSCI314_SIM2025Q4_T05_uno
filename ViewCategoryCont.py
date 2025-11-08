@@ -4,5 +4,5 @@ class ViewCategory:
     def __init__(self):
         self.category = Category()
     
-    def view_category(self, category):
+    def viewCategory(self, category):
         return self.category.view_category(category)

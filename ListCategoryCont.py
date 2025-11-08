@@ -4,5 +4,5 @@ class ListCategory:
     def __init__(self):
         self.category = Category()
     
-    def list_category(self):
+    def listCategory(self):
         return self.category.list_category()

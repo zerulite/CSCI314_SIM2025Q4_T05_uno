@@ -55,17 +55,17 @@ class Request:
     #Search New Requests
     def search_new_request(self, **kwargs):
         base = (
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
             "LEFT JOIN `UserAccount` u ON u.userID = r.userID "
-            "WHERE 1=1"
+            "WHERE r.reqStatus = 'Open'"
         )
         params = []
 
-        for field in ["requestID", "request", "date", "time", "category", "userID", "completed"]:
+        for field in ["requestID", "reqDescription", "volunteer", "helpNeededDate", "helpNeededTime", "category", "userID"]:
             value = kwargs.get(field)
-            if value is not None and value != "":
-                if field == "request":
+            if value not in (None, ""):
+                if field in ["reqDescription", "volunteer", "category", "userID"]:
                     base += f" AND r.{field} LIKE %s"
                     params.append(f"%{value}%")
                 else:
@@ -80,12 +80,20 @@ class Request:
         print("RESULTS:", len(rows))
         return rows
 
+    #View Individual Request
+    def view_individual_request(self, request_id: str):
+        sql = (
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
+            "FROM `Request` r WHERE r.requestID = %s LIMIT 1"
+        )
+        return self.db.fetch(sql, (str(request_id),))
+
     #View All Requests
     def view_all_requests(self, limit=100, offset=0):
         sql = (
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
-            "ORDER BY r.date, r.time, r.requestID "
+            "ORDER BY r.helpNeededDate, r.helpNeededTime, r.requestID "
             "LIMIT %s OFFSET %s"
         )
         return self.db.fetch(sql, (int(limit), int(offset)))
@@ -103,9 +111,10 @@ class Request:
     #Search Shorlist Requests
     def search_shortlisted(
         self,
-        csr_user_id: str,
+        csr_user_id,
         requestID=None,
         request=None,
+        volunteer=None,
         date=None,
         time=None,
         category=None,
@@ -115,7 +124,7 @@ class Request:
         offset: int = 0,
     ):
         sql = [
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed",
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus",
             "FROM Request r",
             "INNER JOIN RequestShortlist s ON s.requestID = r.requestID",
             "WHERE s.userID = %s",
@@ -126,28 +135,32 @@ class Request:
             sql.append("AND r.requestID = %s")
             params.append(requestID)
 
-        if request is not None and request != "":
-            sql.append("AND r.request LIKE %s")
+        if request not in (None, ""):
+            sql.append("AND r.reqDescription LIKE %s")
             params.append(f"%{request}%")
 
+        if volunteer not in (None, ""):
+            sql.append("AND r.volunteer LIKE %s")
+            params.append(f"%{volunteer}%")
+
         if date:
-            sql.append("AND r.date = %s")
+            sql.append("AND r.helpNeededDate = %s")
             params.append(date)
 
         if time:
-            sql.append("AND r.time = %s")
+            sql.append("AND r.helpNeededTime = %s")
             params.append(time)
 
-        if category:
+        if category not in (None, ""):
             sql.append("AND r.category LIKE %s")
             params.append(f"%{category}%")
 
-        if userID:
+        if userID not in (None, ""):
             sql.append("AND r.userID LIKE %s")
             params.append(f"%{userID}%")
 
         if completed is not None:
-            sql.append("AND (r.completed = %s OR (r.completed IS NULL AND %s = ''))")
+            sql.append("AND (r.reqStatus = %s OR (r.reqStatus IS NULL AND %s = ''))")
             params.extend([completed, completed])
 
         sql.append("ORDER BY r.requestID LIMIT %s OFFSET %s")
@@ -158,11 +171,11 @@ class Request:
     #View Shortlisted Requests
     def view_shortlist(self, csr_user_id: str, limit=100, offset=0):
         sql = (
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
             "INNER JOIN `RequestShortlist` s ON s.requestID = r.requestID "
             "WHERE s.userID = %s "
-            "ORDER BY r.date, r.time, r.requestID "
+            "ORDER BY r.helpNeededDate, r.helpNeededTime, r.requestID "
             "LIMIT %s OFFSET %s"
         )
         return self.db.fetch(sql, (csr_user_id, int(limit), int(offset)))
@@ -170,19 +183,19 @@ class Request:
     #Search History
     def search_history(self, **kwargs):
         base = (
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
             "LEFT JOIN `UserAccount` u ON u.userID = r.userID "
             "WHERE 1=1"
         )
         params = []
-        base += " AND r.completed = %s"
-        params.append("Yes")
+        base += " AND r.reqStatus = %s"
+        params.append("Completed")
 
-        for field in ["requestID", "request", "date", "time", "category", "userID"]:
+        for field in ["requestID", "reqDescription", "volunteer", "helpNeededDate", "helpNeededTime", "category", "userID"]:
             value = kwargs.get(field)
-            if value is not None and value != "":
-                if field == "request":
+            if value not in (None, ""):
+                if field in ["reqDescription", "volunteer", "category", "userID"]:
                     base += f" AND r.{field} LIKE %s"
                     params.append(f"%{value}%")
                 else:
@@ -198,102 +211,116 @@ class Request:
     #View History
     def view_history(self, limit=100, offset=0):
         sql = (
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
-            "WHERE r.completed = %s "
-            "ORDER BY r.date, r.time, r.requestID "
+            "WHERE r.reqStatus = %s "
+            "ORDER BY r.helpNeededDate, r.helpNeededTime, r.requestID "
             "LIMIT %s OFFSET %s"
         )
-        return self.db.fetch(sql, ("Yes", int(limit), int(offset)))
-    
-    #Generate report by date
+        return self.db.fetch(sql, ("Completed", int(limit), int(offset)))
+    # Generate report by date
     def get_requests_by_date(self, date):
         query = """
-        SELECT r.requestID, r.request, r.date, r.time, c.category AS category_name,
-            u.name AS user_name, r.completed
+        SELECT 
+            r.requestID, 
+            r.reqDescription, 
+            r.volunteer,
+            r.helpNeededDate, 
+            TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, 
+            c.category AS category_name,
+            u.name AS user_name, 
+            r.reqStatus
         FROM Request r
         LEFT JOIN Category c ON r.category = c.category
         LEFT JOIN UserAccount u ON r.userID = u.userID
-        WHERE r.date = %s
-        ORDER BY r.time ASC
+        WHERE r.helpNeededDate = %s
+        ORDER BY r.helpNeededTime ASC
         """
         results = self.db.fetch(query, (date,))
         return [
             {
                 "Request ID": r[0],
-                "Request": r[1],
-                "Date": r[2].strftime("%Y-%m-%d") if r[2] else "",
-                "Time": str(r[3]) if r[3] else "",  # <-- change here
-                "Category": r[4],
-                "User": r[5],
-                "Completed": r[6]
+                "Description": r[1],
+                "Volunteer": r[2] if r[2] else "—",  # show dash if no volunteer assigned
+                "Date": r[3].strftime("%Y-%m-%d") if r[3] else "",
+                "Time": r[4] if r[4] else "",
+                "Category": r[5],
+                "User": r[6],
+                "Status": r[7]
             }
             for r in results
         ]
-    
-    #Generate report by week
+
+    # Generate report by week
     def get_requests_by_week(self, week_start):
         query = """
-        SELECT r.requestID, r.request, r.date, r.time, c.category AS category_name,
-            u.name AS user_name, r.completed
+        SELECT 
+            r.requestID, 
+            r.reqDescription, 
+            r.volunteer,
+            r.helpNeededDate, 
+            TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, 
+            c.category AS category_name,
+            u.name AS user_name, 
+            r.reqStatus
         FROM Request r
         LEFT JOIN Category c ON r.category = c.category
         LEFT JOIN UserAccount u ON r.userID = u.userID
-        WHERE r.date BETWEEN %s AND DATE_ADD(%s, INTERVAL 6 DAY)
-        ORDER BY r.date, r.time ASC
+        WHERE r.helpNeededDate BETWEEN %s AND DATE_ADD(%s, INTERVAL 6 DAY)
+        ORDER BY r.helpNeededDate, r.helpNeededTime ASC
         """
         results = self.db.fetch(query, (week_start, week_start))
         return [
             {
                 "Request ID": r[0],
-                "Request": r[1],
-                "Date": r[2].strftime("%Y-%m-%d") if r[2] else "",
-                "Time": str(r[3]) if r[3] else "",
-                "Category": r[4],
-                "User": r[5],
-                "Completed": r[6]
+                "Description": r[1],
+                "Volunteer": r[2] if r[2] else "—",
+                "Date": r[3].strftime("%Y-%m-%d") if r[3] else "",
+                "Time": r[4] if r[4] else "",
+                "Category": r[5],
+                "User": r[6],
+                "Status": r[7]
             }
             for r in results
         ]
-    
-    #Generate report by Month
+
+    # Generate report by Month
     def get_requests_by_month(self, date):
         """
         Fetch all requests for the month of the given date.
         `date` is expected to be a string in 'YYYY-MM-DD' format.
         """
         query = """
-        SELECT r.requestID, r.request, r.date, r.time, c.category AS category_name,
-            u.name AS user_name, r.completed
+        SELECT 
+            r.requestID, 
+            r.reqDescription, 
+            r.volunteer,
+            r.helpNeededDate, 
+            TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime,
+            c.category AS category_name,
+            u.name AS user_name, 
+            r.reqStatus
         FROM Request r
         LEFT JOIN Category c ON r.category = c.category
         LEFT JOIN UserAccount u ON r.userID = u.userID
-        WHERE YEAR(r.date) = YEAR(%s) AND MONTH(r.date) = MONTH(%s)
-        ORDER BY r.date ASC, r.time ASC
+        WHERE YEAR(r.helpNeededDate) = YEAR(%s) AND MONTH(r.helpNeededDate) = MONTH(%s)
+        ORDER BY r.helpNeededDate ASC, r.helpNeededTime ASC
         """
         results = self.db.fetch(query, (date, date))
 
-        # Transform into dicts for easier use in Flask
         report = []
         for r in results:
-            # r[3] is timedelta -> convert to hh:mm:ss string
-            time_str = ""
-            if r[3] is not None:
-                total_seconds = int(r[3].total_seconds())
-                hours = total_seconds // 3600
-                minutes = (total_seconds % 3600) // 60
-                seconds = total_seconds % 60
-                time_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
-
             report.append({
                 "Request ID": r[0],
-                "Request": r[1],
-                "Date": r[2].strftime("%Y-%m-%d") if r[2] else "",
-                "Time": time_str,
-                "Category": r[4],
-                "User": r[5],
-                "Completed": r[6]
+                "Description": r[1],
+                "Volunteer": r[2] if r[2] else "—",
+                "Date": r[3].strftime("%Y-%m-%d") if r[3] else "",
+                "Time": r[4] if r[4] else "",
+                "Category": r[5],
+                "User": r[6],
+                "Status": r[7]
             })
+
         return report
 
 
