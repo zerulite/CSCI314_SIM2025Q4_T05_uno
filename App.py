@@ -19,7 +19,7 @@ userID = "U001"
 
 @app.route("/")
 def home():
-    return render_template("helloworld.html")
+    return render_template("home.html")
 
 @app.route("/ViewCreateRequestPg", methods=['GET'])
 def viewCreateReq():
