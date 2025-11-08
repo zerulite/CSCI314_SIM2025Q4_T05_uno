@@ -173,7 +173,7 @@ def viewAReq():
 
     return render_template('viewARequest.html', result=result)
 
-@app.route('/SearchReq', methods=['GET', 'POST'])
+@app.route('/SearchReq', methods=['GET'])
 def searchReq():
     controller = SearchReqCont()
     result = None
@@ -265,6 +265,7 @@ def viewCompletedReq():
 
     return render_template('viewCompletedRequests.html', result=result)
 
+@app.route('/SearchCompletedReq', methods=['GET'])
 def searchCompletedReq():
     controller = SearchCompletedReqCont()
     result = None
@@ -294,7 +295,7 @@ def searchCompletedReq():
         elif response["type"] == "data":
             result = response["rows"]
 
-    return render_template('searchRequest.html', results=result, q=searchParams)
+    return render_template('searchCompletedRequest.html', results=result, q=searchParams)
 
 # @app.route('/SearchCompletedReq', methods=['GET', 'POST'])
 # def searchCompletedReq():

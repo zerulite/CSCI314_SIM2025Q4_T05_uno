@@ -5,7 +5,7 @@ class SearchCompletedReqCont:
         self.reqEntity = Request()
 
     def searchCompletedReqCont(self, **kwargs):
-        result = self.reqEntity.searchReq(**kwargs)
+        result = self.reqEntity.searchCompletedReq(**kwargs)
 
         if isinstance(result, dict):
             return {"type": "alert", "message": result.get("message")}
