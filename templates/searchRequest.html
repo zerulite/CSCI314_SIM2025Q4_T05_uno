@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Search Request</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous"
+        />
+    </head>
+    <body>
+        <div class="container my-4">
+            <h1 class="mt-3 mb-4 text-center">Search Requests</h1>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="get" action="/SearchReq" class="mb-2">
+                        <div
+                            class="d-flex flex-nowrap align-items-end overflow-auto filter"
+                        >
+                            <div class="form-group mr-2 mb-2">
+                                <label for="requestID">Request ID</label>
+                                <input
+                                    id="requestID"
+                                    name="requestID"
+                                    class="form-control form-control-sm"
+                                    value="{{ q.get('requestID','') }}"
+                                />
+                            </div>
+
+                            <div class="form-group mr-2 mb-2">
+                                <label for="request">Description</label>
+                                <input
+                                    id="reqDescription"
+                                    name="request"
+                                    class="form-control form-control-sm"
+                                    value="{{ q.get('request','') }}"
+                                />
+                            </div>
+
+                            <div class="form-group mr-2 mb-2">
+                                <label for="date">Date</label>
+                                <input
+                                    id="helpNeededDate"
+                                    type="date"
+                                    name="helpNeededDate"
+                                    class="form-control form-control-sm"
+                                    value="{{ q.get('helpNeededDate','') }}"
+                                />
+                            </div>
+
+                            <div class="form-group mr-2 mb-2">
+                                <label for="time">Time</label>
+                                <input
+                                    id="helpNeededTime"
+                                    type="time"
+                                    name="helpNeededTime"
+                                    class="form-control form-control-sm"
+                                    value="{{ (q.get('time')[:5]) if q.get('time') else '' }}"
+                                />
+                            </div>
+
+                            <div class="form-group mr-2 mb-2">
+                                <label for="category">Category</label>
+                                <input
+                                    id="category"
+                                    name="category"
+                                    class="form-control form-control-sm"
+                                    value="{{ q.get('category','') }}"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Right-aligned toolbar with all action buttons -->
+                        <div class="d-flex justify-content-end mt-2">
+                            <div class="btn-group">
+                                <a
+                                    class="btn btn-outline-secondary btn-sm"
+                                    href="{{url_for('home')}}"
+                                    >Back to Home</a
+                                >
+                                <a
+                                    class="btn btn-outline-secondary btn-sm"
+                                    href="/SearchCompletedReq"
+                                    >Search Completed Requests</a
+                                >
+                                <a
+                                    class="btn btn-outline-secondary btn-sm"
+                                    href="/SearchReq"
+                                    >Reset</a
+                                >
+                                <button
+                                    type="submit"
+                                    name="Search"
+                                    value="1"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive mt-3 table-wrap">
+                        <table class="table table-striped table-bordered mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>RequestID</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if results and results|length > 0 %} {% for
+                                row in results %}
+                                <tr>
+                                    <td>{{ row[0] }}</td>
+                                    <td>{{ row[1] }}</td>
+                                    <td>{{row[2]}}</td>
+                                    <td>{{row[3]}}</td>
+                                    <td>{{ row[7] or '' }}</td>
+                                </tr>
+                                {% endfor %} {% else %}
+                                <tr>
+                                    <td
+                                        colspan="8"
+                                        class="text-center text-muted"
+                                    >
+                                        No results yet
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

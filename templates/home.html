@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>View Request</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous"
+        />
+        <style>
+            h1 {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container mt-3 d-flex justify-content-end">
+            <a class="btn btn-danger float-right" href="/Logout">Logout</a>
+        </div>
+        <div class="container mt-3">
+            <h1 class="mt-5">Person-in-Need (PIN)</h1>
+            <div class="row mt-3 justify-content-center">
+                <a href="/ViewReq" class="btn btn-primary">View All Requests</a>
+            </div>
+            <div class="row mt-3 justify-content-center">
+                <a href="/ReqViewCount" class="btn btn-primary"
+                    >View Request View Count</a
+                >
+            </div>
+            <div class="row mt-3 justify-content-center">
+                <a href="/ReqShortlistCount" class="btn btn-primary"
+                    >View Request Shortlist Count</a
+                >
+            </div>
+            <div class="row mt-3 justify-content-center">
+                <a href="/ViewCompletedReq" class="btn btn-primary"
+                    >View Completed Requests</a
+                >
+            </div>
+            <div class="row mt-3 justify-content-center">
+                <a href="/SearchReq" class="btn btn-primary">Search Request</a>
+            </div>
+        </div>
+    </body>
+</html>
