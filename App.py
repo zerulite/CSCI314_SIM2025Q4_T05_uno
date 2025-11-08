@@ -153,12 +153,15 @@ def deleteReq():
 def viewAReq():
     controller = ViewAReqCont()
     result = None
+    requestID = request.args.get('requestID', '').strip()
+
     
     # Get userID from session
     # userID = session.get('userID')
     # if not userID:
     #     return redirect(url_for('login'))
 
+    # requestID should be received when html button is pressed by user
     response = controller.viewAReqCont(requestID, userID)
 
     if response["type"] == "alert" or response["type"] == "error":
