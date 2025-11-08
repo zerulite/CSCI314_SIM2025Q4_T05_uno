@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Category & Reports Management</title>
+
+    <!-- Bootstrap 4 -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous"
+    />
+
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            position: relative;
+        }
+
+        .card-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        /* Logout button positioned at top-right of page */
+        .top-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .btn-container .btn {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top-right logout -->
+    <div class="top-right">
+        <a href="{{ url_for('userLogout') }}" class="btn btn-danger btn-sm">Logout</a>
+    </div>
+
+    <div class="card card-container">
+        <h1 class="h4 text-center mb-4">Category & Reports Management</h1>
+
+        <div class="btn-container">
+            <!-- Category Buttons -->
+            <a href="{{ url_for('createCategory') }}" class="btn btn-outline-secondary btn-block">Create Category</a>
+            <a href="{{ url_for('searchCategory') }}" class="btn btn-outline-secondary btn-block">Search Category</a>
+            <a href="{{ url_for('listCategory') }}" class="btn btn-outline-secondary btn-block">View All Categories</a>
+
+            <!-- Report Buttons -->
+            <a href="{{ url_for('daily_report') }}" class="btn btn-outline-secondary btn-block">Daily Report</a>
+            <a href="{{ url_for('weekly_report') }}" class="btn btn-outline-secondary btn-block">Weekly Report</a>
+            <a href="{{ url_for('monthly_report') }}" class="btn btn-outline-secondary btn-block">Monthly Report</a>
+        </div>
+    </div>
+</body>
+</html>

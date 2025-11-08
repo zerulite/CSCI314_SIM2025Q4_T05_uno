@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Category Management</title>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous"
+    />
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 text-center">Category Management</h1>
+
+        <div class="d-flex justify-content-end align-items-center mt-3">
+            <div class="btn-group">
+                <a class="btn btn-outline-secondary btn-sm" href="/PM_main">Main Page</a>
+            </div>
+        </div>
+
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col" style="width: 150px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if categories and categories|length > 0 %}
+                        {% for cat in categories %}
+                            <tr>
+                                <td>{{ cat['category'] }}</td>
+                                <td>{{ cat['description'] }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a class="btn btn-primary btn-sm" href="{{ url_for('viewCategory', category=cat['category']) }}">
+                                            View Details
+                                        </a>
+                                        <!-- Optional future action buttons -->
+                                        <!-- <a class="btn btn-warning btn-sm" href="#">Edit</a>
+                                        <a class="btn btn-danger btn-sm" href="#">Delete</a> -->
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No categories found in the system.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
