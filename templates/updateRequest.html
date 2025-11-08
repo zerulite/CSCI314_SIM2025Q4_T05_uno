@@ -18,11 +18,18 @@
     </head>
     <body>
         <div class="container">
+            <div class="btn-container mt-2">
+                <a
+                    href="{{url_for('home')}}"
+                    class="btn btn-primary float-right"
+                    >Back to Home</a
+                >
+            </div>
             <h1 class="mt-5">Update Help Request</h1>
             <form method="POST" action="/UpdateReq">
-                <input type="hidden" name="requestID" value="{{ requestID }}">
-                <input type="hidden" name="reqStatus" value="{{ reqStatus }}">
-                
+                <input type="hidden" name="requestID" value="{{ requestID }}" />
+                <input type="hidden" name="reqStatus" value="{{ reqStatus }}" />
+
                 <div class="form-group category-group">
                     <label for="title">Category</label>
                     <select

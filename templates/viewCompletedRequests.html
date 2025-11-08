@@ -18,34 +18,41 @@
         </style>
     </head>
     <body>
-        <h1 class="container mt-5 text-center">Completed Requests</h1>
-        
-        {%if result=="Failed to view request: User does not have any completed requests."%}
-        <h3 class="container error text-center">No completed requests!</div>
-        {%else%}
-        <table class="table mt-2">
+        <div class="container">
+            <div class="btn-container mt-2">
+                        <a href="{{url_for('home')}}" class="btn btn-primary float-right"
+                            >Back to Home</a
+                        >
+                    </div>
+            <h1 class="container mt-5 text-center">Completed Requests</h1>
             
-                <thead>
-                    <tr>
-                        <th scope="col">Request Description</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Time</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {%for row in result%}
-                    <tr>
-                        <td>{{row[1]}}</td>
-                        <td>{{row[2]}}</td>
-                        <td>{{row[3]}}</td>
-                        <td>{{row[7]}}</td>
-                        <td>{{row[4]}}</td>
-                    </tr>
-                    {%endfor%}
-                </tbody>
-            </table>
-            {%endif%}
+            {%if result|len==1%}
+            <h3 class="container error text-center">No completed requests!</div>
+            {%else%}
+            <table class="table mt-2">
+                
+                    <thead>
+                        <tr>
+                            <th scope="col">Request Description</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for row in result%}
+                        <tr>
+                            <td>{{row[1]}}</td>
+                            <td>{{row[2]}}</td>
+                            <td>{{row[3]}}</td>
+                            <td>{{row[7]}}</td>
+                            <td>{{row[4]}}</td>
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+                {%endif%}
+        </div>
     </body>
 </html>
