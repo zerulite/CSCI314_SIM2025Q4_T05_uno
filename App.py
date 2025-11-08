@@ -203,7 +203,7 @@ def searchReq():
         elif response["type"] == "data":
             result = response["rows"]
 
-    return render_template('searchRequest.html', result=result)
+    return render_template('searchRequest.html', results=result, q=searchParams)
 
 @app.route('/ReqViewCount', methods=['GET'])
 def reqViewCount():
@@ -294,7 +294,7 @@ def searchCompletedReq():
         elif response["type"] == "data":
             result = response["rows"]
 
-    return render_template('searchRequest.html', result=result)
+    return render_template('searchRequest.html', results=result, q=searchParams)
 
 # @app.route('/SearchCompletedReq', methods=['GET', 'POST'])
 # def searchCompletedReq():
