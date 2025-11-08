@@ -1,4 +1,5 @@
 from flask import *
+from LoginCont import *
 from CreateUserAcctCont import *
 from UpdateUserAcctCont import *
 from ViewUserAcctCont import *
@@ -11,11 +12,18 @@ from ListUserProfileCont import *
 from UpdateUserProfileCont import *
 from SuspendUserProfileCont import *
 from SearchUserProfileCont import *
-from LoginCont import *
+from CreateCategoryCont import *
+from ViewCategoryCont import *
+from ListCategoryCont import *
+from UpdateCategoryCont import *
+from DeleteCategoryCont import *
+from SearchCategoryCont import *
+from GenerateDailyReportCont import *
+from GenerateWeeklyReportCont import *
+from GenerateMonthlyReportCont import *
 
 app = Flask(__name__)
 app.secret_key = "Spt2!31oon"
-
 
 @app.route('/')
 def home():
@@ -25,6 +33,7 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def userLogin():
     controller = Login()
+
     if request.method == 'POST':
         userID = request.form['userID']
         password = request.form['password']
@@ -38,29 +47,30 @@ def userLogin():
             flash(result["message"], "success")
 
             if user["profile"] == "CSR Representative":
-                return redirect(url_for('csr_main'))
+                return redirect(url_for('CSRMain'))
             elif user["profile"] == "Platform Management":
-                return redirect(url_for('PM_main'))
+                return redirect(url_for('PMHome'))
             elif user["profile"] == "User Admin":
-                return redirect(url_for('admin_main'))
+                return redirect(url_for('adminHome'))
             elif user["profile"] == "Person In Need":
                 return redirect(url_for('PIN_main'))
             else:
                 return redirect(url_for('dashboard'))
-            
-    else:
-        flash(result["message"], "danger")
+        else:
+            flash(result["message"], "danger")
+    
     return render_template('login.html')
+
 
 #Logout
 @app.route('/logout')
 def userLogout():
     session.clear()
     flash("You have been logged out.", "info")
-    return redirect(url_for('login'))
+    return redirect(url_for('userLogin'))
 
 @app.route('/csr_main')
-def csr_main():
+def CSRMain():
     # Optional: check session/profile
     if 'profile' not in session or session['profile'] != "CSR Representative":
         flash("Access denied.", "danger")
@@ -68,20 +78,20 @@ def csr_main():
     return render_template('csr_main.html')
 
 
-@app.route('/PM_main')
-def PM_main():
+@app.route('/PMHome')
+def PMHome():
     if 'profile' not in session or session['profile'] != "Platform Management":
         flash("Access denied.", "danger")
         return redirect(url_for('login'))
-    return render_template('PM_main.html')
+    return render_template('/PlatformManagement/PMHome.html')
 
 
-@app.route('/admin_main')
-def admin_main():
+@app.route('/adminHome')
+def adminHome():
     if 'profile' not in session or session['profile'] != "User Admin":
         flash("Access denied.", "danger")
         return redirect(url_for('login'))
-    return render_template('admin_main.html')
+    return render_template('/UserAdmin/adminHome.html')
 
 
 @app.route('/PIN_main')
@@ -108,24 +118,36 @@ def createUserAcct():
         response = controller.createUserAccount(userID, password, name, email, profile, userState)
         message = response["message"]
 
-    return render_template('createUserAcct.html', message=message)
+    return render_template('/UserAdmin/createUserAcct.html', message=message)
 
-#View User Account details
-@app.route('/viewUserAcct', methods=['GET', 'POST'])
-def viewUserAcct():
-    controller = ViewUserAccount()
-
+# View User Account details (supports GET and POST)
+@app.route('/viewUserAcct', methods=['POST'])
+@app.route('/viewUserAcct/<userID>', methods=['GET'])
+def viewUserAcct(userID=None):
+    # If POST, get userID from the hidden form field
     if request.method == 'POST':
-        user_id = request.form['userID']
-        user_data = controller.view_user_account(user_id)
-    return render_template("viewUserAcct.html", user=user_data)
+        userID = request.form.get('userID')
+
+    if not userID:
+        flash("No user selected.")
+        return redirect(url_for('/UserAdmin/listUsers'))
+
+    controller = ViewUserAccount()
+    user_data = controller.viewUserAccount(userID)
+
+    if not user_data:
+        flash("User not found.")
+        return redirect(url_for('listUsers'))
+
+    return render_template("/UserAdmin/viewUserAcct.html", user=user_data)
+
 
 #List of all User Account
 @app.route('/listUsers')
 def listUsers():
     controller = ListUserAccount()
-    users_data = controller.list_acct()  # This returns the list of users
-    return render_template("listUsers.html", users=users_data)
+    users_data = controller.listAcct()  # This returns the list of users
+    return render_template("/UserAdmin/listUsers.html", users=users_data)
 
 #Update User Account
 @app.route('/UpdateUserAcct/<userID>', methods=['GET', 'POST'])
@@ -147,7 +169,7 @@ def updateAcct(userID):
     # Fetch user details to pre-fill the form
     user = controller.getUserByID(userID)
 
-    return render_template('updateUserAcct.html', user=user, message=message)
+    return render_template('/UserAdmin/updateUserAcct.html', user=user, message=message)
 
 
 #Suspend User Account
@@ -166,24 +188,34 @@ def suspendAcct(userID):
     # Fetch user details to pre-fill the form
     user = controller.getUserByID(userID)
 
-    return render_template('suspendUserAcct.html', user=user, message=message)
+    return render_template('/UserAdmin/suspendUserAcct.html', user=user, message=message)
 
-#Search User Account
+# Search User Account
 @app.route('/SearchUserAcct', methods=['GET', 'POST'])
 def searchUsers():
+    # Initialize empty defaults
     users = []
+    form_data = {
+        "userID": "",
+        "password": "",
+        "name": "",
+        "email": "",
+        "profile": "",
+        "userState": ""
+    }
+
     if request.method == "POST":
-        search_fields = {
-            "userID": request.form.get("userID"),
-            "password": request.form.get("password"),
-            "name": request.form.get("name"),
-            "email": request.form.get("email"),
-            "profile": request.form.get("profile"),
-            "userState": request.form.get("userState")
-        }
+        # Get form values
+        for key in form_data.keys():
+            form_data[key] = request.form.get(key, "")
+
+        # Perform search
         controller = SearchUserAccount()
-        users = controller.search_users(search_fields)
-    return render_template("searchUserAcct.html", users=users)
+        users = controller.searchUsers(form_data)
+
+    # Pass users and form_data to template
+    return render_template("/UserAdmin/searchUserAcct.html",users=users,**form_data)
+
 
 #Create User Profile
 @app.route('/createUserProfile', methods=['GET', 'POST'])
@@ -199,24 +231,28 @@ def createProfile():
         response = controller.createUserProfile(profile, description, profileState)
         message = response["message"]
 
-    return render_template('createUserProfile.html', message=message)
+    return render_template('/UserAdmin/createUserProfile.html', message=message)
 
-#View User Profile
+# View User Profile
 @app.route('/viewUserProfile', methods=['GET', 'POST'])
 def viewProfile():
     controller = ViewUserProfile()
+    profile_data = None
+    profile = request.args.get('profile') or request.form.get('profile')
 
-    if request.method == 'POST':
-        profile = request.form.get('profile')
-        profile_data = controller.view_user_profile(profile)
-    return render_template("viewUserProfile.html", profile=profile_data)
+    if profile:
+        profile_data = controller.viewUserProfile(profile)
+        if not profile_data:
+            flash("Profile not found.")
+
+    return render_template("/UserAdmin/viewUserProfile.html", profile=profile_data)
 
 #List of all User Profile
 @app.route('/listProfile')
 def listProfiles():
     controller = ListUserProfile()
-    profile_data = controller.list_profile() 
-    return render_template("listProfiles.html", profiles=profile_data)
+    profile_data = controller.listProfile() 
+    return render_template("/UserAdmin/listProfiles.html", profiles=profile_data)
 
 #Update User Profile
 @app.route('/updateUserProfile/<profile>', methods=['GET', 'POST'])
@@ -236,7 +272,7 @@ def updateProfile(profile):
     # Fetch user details to pre-fill the form
     profile_data = controller.getProfile(profile)
 
-    return render_template('updateUserProfile.html', profile=profile_data, message=message)
+    return render_template('/UserAdmin/updateUserProfile.html', profile=profile_data, message=message)
 
 
 #Suspend User Profile
@@ -255,21 +291,149 @@ def suspendProfile(profile):
     # Fetch user details to pre-fill the form
     profile_data = controller.getProfile(profile)
 
-    return render_template('suspendUserProfile.html', profile=profile_data, message=message)
+    return render_template('/UserAdmin/suspendUserProfile.html', profile=profile_data, message=message)
 
-#Search User Profile
+# Search User Profile
 @app.route('/searchUserProfile', methods=['GET', 'POST'])
 def searchProfile():
     profiles_data = []
+    form_data = {
+        "profile": "",
+        "description": "",
+        "profileState": ""
+    }
+
+    if request.method == "POST":
+        # Get form values and retain them
+        for key in form_data.keys():
+            form_data[key] = request.form.get(key, "")
+
+        # Perform search
+        controller = SearchUserProfile()
+        profiles_data = controller.searchProfile(form_data)
+
+    return render_template(
+        "searchUserProfile.html",
+        profiles=profiles_data,
+        **form_data
+    )
+
+
+#Platform Management
+
+#Create Categories
+@app.route('/createCategory', methods=['GET', 'POST'])
+def createCategory():
+    controller = CreateCategory()
+    message = None
+    if request.method == 'POST':
+
+        category = request.form['category']
+        description = request.form['description']
+
+        response = controller.createCategory(category, description)
+        message = response["message"]
+
+    return render_template('/PlatformManagement/createCategory.html', message=message)
+
+# View Categories
+@app.route('/viewCategories', methods=['GET', 'POST'])
+def viewCategory():
+    controller = ViewCategory()
+    category_data = None
+
+    # Get category from POST or GET
+    category = request.form.get('category') or request.args.get('category')
+    if category:
+        category_data = controller.viewCategory(category)
+
+    return render_template("/PlatformManagement/viewCategory.html", category=category_data)
+
+
+
+#List of all User Profile
+@app.route('/listCategories')
+def listCategory():
+    controller = ListCategory()
+    categories = controller.listCategory()
+    return render_template("/PlatformManagement/listCategories.html", categories=categories)
+
+#Update Categories
+@app.route('/updateCategory/<category>', methods=['GET', 'POST'])
+def updateCategory(category):
+    controller = UpdateCategory()
+    message = None
+
+    if request.method == 'POST':
+        # Handle form submission to update user
+        category = request.form['category']
+        description = request.form['description']
+
+        response = controller.updateCategory(category, description)
+        message = response.get("message", "Update failed")
+
+    # Fetch user details to pre-fill the form
+    category_data = controller.getCategory(category)
+
+    return render_template('/PlatformManagement/updateCategory.html', category=category_data, message=message)
+
+#Delete Categories
+@app.route('/deleteCategory', methods=['POST'])
+def deleteCategory():
+    controller = DeleteCategory()
+    category = request.args.get('category') or request.form.get('category')
+    response = controller.deleteCategory(category)
+
+    if response["success"]:
+        flash(response["message"], "success")
+    else:
+        flash(response["message"], "error")
+
+    return redirect(url_for('/PlatformManagement/listCategory'))
+
+#Search Categories
+@app.route('/searchCategory', methods=['GET', 'POST'])
+def searchCategory():
+    categories_data = []
     if request.method == "POST":
         search_fields = {
-            "profile": request.form.get("profile"),
-            "description": request.form.get("description"),
-            "profileState": request.form.get("profileState")
+            "category": request.form.get("category"),
+            "description": request.form.get("description")
         }
-        controller = SearchUserProfile()
-        profiles_data = controller.search_profiles(search_fields)
-    return render_template("searchUserProfile.html", profiles=profiles_data)
+        controller = SearchCategory()
+        categories_data = controller.searchCategory(search_fields)
+    return render_template("/PlatformManagement/searchCategory.html", categories=categories_data)
+
+#Generate Daily Reports
+@app.route('/dailyReport', methods=['GET', 'POST'])
+def dailyReport():
+    report_data = []
+    controller = GenerateDailyReport()
+    if request.method == 'POST':
+        date = request.form['date']
+        report_data = controller.generateDailyReport(date)
+    return render_template('/PlatformManagement/dailyReport.html', report=report_data)
+
+#Generate Weekly Reports
+@app.route('/weeklyReport', methods=['GET', 'POST'])
+def weeklyReport():
+    report_data = []
+    controller = GenerateWeeklyReport()
+    if request.method == 'POST':
+        week_start = request.form['week_start']  # YYYY-MM-DD (Monday)
+        report_data = controller.generateWeeklyReport(week_start)
+    return render_template('/PlatformManagement/weeklyReport.html', report=report_data)
+
+#Generate Monthly Reports
+@app.route('/monthlyReport', methods=['GET', 'POST'])
+def monthlyReport():
+    report_data = []
+    controller = GenerateMonthlyReport()
+    if request.method == 'POST':
+        date = request.form['date']
+        report_data = controller.generateMonthlyReport(date)
+    return render_template('/PlatformManagement/monthlyReport.html', report=report_data)
+
 
 #Main
 if __name__ == '__main__':
