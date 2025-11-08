@@ -89,7 +89,7 @@
                                 >
                                 <a
                                     class="btn btn-outline-secondary btn-sm"
-                                    href="/SearchRequest"
+                                    href="/SearchReq"
                                     >Reset</a
                                 >
                                 <button
@@ -132,8 +132,6 @@
                                         row[4].strftime('%H:%M') }} {% else %}
                                         {{ (row[4] or '')[:5] }} {% endif %}
                                     </td>
-                                    <td>{{ row[5] }}</td>
-                                    <td>{{ row[6] }}</td>
                                     <td>{{ row[7] or '' }}</td>
                                 </tr>
                                 {% endfor %} {% else %}
