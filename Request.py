@@ -19,12 +19,12 @@ class Database:
             print(f"DB error: {err}")
             self.connection = None
 
-    def _ensure_conn(self):
+    def ensureConn(self):
         if self.connection is None or not self.connection.is_connected():
             self.connect()
 
     def execute(self, query, values=None):
-        self._ensure_conn()
+        self.ensureConn()
         cur = self.connection.cursor()
         try:
             cur.execute(query, values or ())
@@ -33,7 +33,7 @@ class Database:
             cur.close()
 
     def fetch(self, query, values=None):
-        self._ensure_conn()
+        self.ensureConn()
         cur = self.connection.cursor()
         try:
             cur.execute(query, values or ())
@@ -55,17 +55,17 @@ class Request:
     #Search New Requests
     def search_new_request(self, **kwargs):
         base = (
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
             "LEFT JOIN `UserAccount` u ON u.userID = r.userID "
-            "WHERE 1=1"
+            "WHERE r.reqStatus = 'Open'"
         )
         params = []
 
-        for field in ["requestID", "request", "date", "time", "category", "userID", "completed"]:
+        for field in ["requestID", "reqDescription", "volunteer", "helpNeededDate", "helpNeededTime", "category", "userID"]:
             value = kwargs.get(field)
-            if value is not None and value != "":
-                if field == "request":
+            if value not in (None, ""):
+                if field in ["reqDescription", "volunteer", "category", "userID"]:
                     base += f" AND r.{field} LIKE %s"
                     params.append(f"%{value}%")
                 else:
@@ -80,12 +80,20 @@ class Request:
         print("RESULTS:", len(rows))
         return rows
 
+    #View Individual Request
+    def view_individual_request(self, request_id: str):
+        sql = (
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
+            "FROM `Request` r WHERE r.requestID = %s LIMIT 1"
+        )
+        return self.db.fetch(sql, (str(request_id),))
+
     #View All Requests
     def view_all_requests(self, limit=100, offset=0):
         sql = (
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
-            "ORDER BY r.date, r.time, r.requestID "
+            "ORDER BY r.helpNeededDate, r.helpNeededTime, r.requestID "
             "LIMIT %s OFFSET %s"
         )
         return self.db.fetch(sql, (int(limit), int(offset)))
@@ -100,12 +108,30 @@ class Request:
         affected = self.db.execute(sql, params)
         return affected > 0
     
+    def shortlist_status(self, request_id: str, csr_user_id: str) -> str:
+        try:
+            affected = self.db.execute(
+                "INSERT IGNORE INTO RequestShortlist (requestID, userID) VALUES (%s, %s)",
+                (str(request_id), str(csr_user_id))
+            )
+            if affected == 1:
+                return "added"
+
+            exists = self.db.fetch(
+                "SELECT 1 FROM RequestShortlist WHERE requestID=%s AND userID=%s LIMIT 1",
+                (str(request_id), str(csr_user_id))
+            )
+            return "exists" if exists else "error"
+        except Exception:
+            return "error"
+
     #Search Shorlist Requests
     def search_shortlisted(
         self,
-        csr_user_id: str,
+        csr_user_id,
         requestID=None,
         request=None,
+        volunteer=None,
         date=None,
         time=None,
         category=None,
@@ -115,7 +141,7 @@ class Request:
         offset: int = 0,
     ):
         sql = [
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed",
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus",
             "FROM Request r",
             "INNER JOIN RequestShortlist s ON s.requestID = r.requestID",
             "WHERE s.userID = %s",
@@ -126,28 +152,32 @@ class Request:
             sql.append("AND r.requestID = %s")
             params.append(requestID)
 
-        if request is not None and request != "":
-            sql.append("AND r.request LIKE %s")
+        if request not in (None, ""):
+            sql.append("AND r.reqDescription LIKE %s")
             params.append(f"%{request}%")
 
+        if volunteer not in (None, ""):
+            sql.append("AND r.volunteer LIKE %s")
+            params.append(f"%{volunteer}%")
+
         if date:
-            sql.append("AND r.date = %s")
+            sql.append("AND r.helpNeededDate = %s")
             params.append(date)
 
         if time:
-            sql.append("AND r.time = %s")
+            sql.append("AND r.helpNeededTime = %s")
             params.append(time)
 
-        if category:
+        if category not in (None, ""):
             sql.append("AND r.category LIKE %s")
             params.append(f"%{category}%")
 
-        if userID:
+        if userID not in (None, ""):
             sql.append("AND r.userID LIKE %s")
             params.append(f"%{userID}%")
 
         if completed is not None:
-            sql.append("AND (r.completed = %s OR (r.completed IS NULL AND %s = ''))")
+            sql.append("AND (r.reqStatus = %s OR (r.reqStatus IS NULL AND %s = ''))")
             params.extend([completed, completed])
 
         sql.append("ORDER BY r.requestID LIMIT %s OFFSET %s")
@@ -158,11 +188,11 @@ class Request:
     #View Shortlisted Requests
     def view_shortlist(self, csr_user_id: str, limit=100, offset=0):
         sql = (
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
             "INNER JOIN `RequestShortlist` s ON s.requestID = r.requestID "
             "WHERE s.userID = %s "
-            "ORDER BY r.date, r.time, r.requestID "
+            "ORDER BY r.helpNeededDate, r.helpNeededTime, r.requestID "
             "LIMIT %s OFFSET %s"
         )
         return self.db.fetch(sql, (csr_user_id, int(limit), int(offset)))
@@ -170,19 +200,19 @@ class Request:
     #Search History
     def search_history(self, **kwargs):
         base = (
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
             "LEFT JOIN `UserAccount` u ON u.userID = r.userID "
             "WHERE 1=1"
         )
         params = []
-        base += " AND r.completed = %s"
-        params.append("Yes")
+        base += " AND r.reqStatus = %s"
+        params.append("Completed")
 
-        for field in ["requestID", "request", "date", "time", "category", "userID"]:
+        for field in ["requestID", "reqDescription", "volunteer", "helpNeededDate", "helpNeededTime", "category", "userID"]:
             value = kwargs.get(field)
-            if value is not None and value != "":
-                if field == "request":
+            if value not in (None, ""):
+                if field in ["reqDescription", "volunteer", "category", "userID"]:
                     base += f" AND r.{field} LIKE %s"
                     params.append(f"%{value}%")
                 else:
@@ -198,10 +228,10 @@ class Request:
     #View History
     def view_history(self, limit=100, offset=0):
         sql = (
-            "SELECT r.requestID, r.request, r.date, r.time, r.category, r.userID, r.completed "
+            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
-            "WHERE r.completed = %s "
-            "ORDER BY r.date, r.time, r.requestID "
+            "WHERE r.reqStatus = %s "
+            "ORDER BY r.helpNeededDate, r.helpNeededTime, r.requestID "
             "LIMIT %s OFFSET %s"
         )
-        return self.db.fetch(sql, ("Yes", int(limit), int(offset)))
+        return self.db.fetch(sql, ("Completed", int(limit), int(offset)))
