@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shortlist Volunteer Opportunities</title>
+
+  <!-- Bootstrap 4 -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous"
+  />
+  <style>
+    body { background:#f8fafc; }
+    .card { border-radius:.75rem; }
+    .toolbar .btn { margin-left:.25rem; }
+    .table thead th { border-top:0; }
+    .table thead th, .table tbody td { padding: .85rem 1rem; font-size: 14.5px; }
+    .muted { color:#6c757d; }
+    .table td, .table th { word-wrap: break-word; white-space: normal; }
+    .text-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div class="container my-4">
+    <h1 class="text-center mb-4">Shortlist Volunteer Opportunities</h1>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-end mt-2">
+          <div class="btn-group">
+            <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('home') }}">Back to home</a>
+            
+        </div>
+      </div>
+
+        <!-- Flash messages -->
+        {% with msgs = get_flashed_messages(with_categories=true) %}
+          {% if msgs %}
+            {% for category, message in msgs %}
+              <div class="alert alert-{{ category if category in ['primary','secondary','success','danger','warning','info','light','dark'] else 'info' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="table-responsive">
+          <table class="table table-hover mb-0" style="table-layout:fixed; width:100%;">
+            <colgroup>
+              <col style="width:12.5%">
+              <col style="width:12.5%">
+              <col style="width:12.5%">
+              <col style="width:12.5%">
+              <col style="width:12.5%">
+              <col style="width:12.5%">
+              <col style="width:12.5%">
+              <col style="width:12.5%">
+              <col style="width:12.5%">
+            </colgroup>
+
+            <thead class="thead-light">
+              <tr>
+                <th>Request ID</th>
+                <th>Request</th>
+                <th>Volunteer</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Category</th>
+                <th>User ID</th>
+                <th>Completed</th>
+                <th class="text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if results and results|length > 0 %}
+                {% for row in results %}
+                  <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                    <td>{{ row[6] }}</td>
+                    <td>{{ row[7] or '' }}</td>
+                    <td class="text-center">
+                      {% if row[7] == "Open" %}
+                        <form class="d-inline" method="post" action="/CSR/Shortlist/{{ row[0] }}">
+                          <button type="submit" class="btn btn-sm btn-success" title="Add to shortlist">
+                            Shortlist
+                          </button>
+                        </form>
+                      {% else %}
+                        <span class="text-muted small">—</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="9" class="text-center text-muted">No data</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
