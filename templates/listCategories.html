@@ -1,152 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Category Management</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #e3f2fd, #ffffff);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        h1 {
-            color: #333;
-            margin-top: 40px;
-            text-align: center;
-        }
-
-        h2 {
-            color: #333;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        section {
-            background: #fff;
-            padding: 25px 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 800px;
-            margin-top: 20px;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 12px 15px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-
-        tr:hover {
-            background-color: #f2f2f2;
-        }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .link {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        a {
-            color: #007bff;
-            text-decoration: none;
-            transition: 0.2s;
-            font-weight: bold;
-            padding: 10px 20px;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-            display: inline-block;
-        }
-
-        a:hover {
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-        }
-
-        .no-categories {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-style: italic;
-        }
-
-        .action-cell {
-            text-align: center;
-        }
-    </style>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous"
+    />
 </head>
 <body>
+    <div class="container">
+        <h1 class="mt-5 text-center">Category Management</h1>
 
-    <h1>Category Management</h1>
+        <div class="d-flex justify-content-end align-items-center mt-3">
+            <div class="btn-group">
+                <a class="btn btn-outline-secondary btn-sm" href="/PM_main">Main Page</a>
+            </div>
+        </div>
 
-    <section>
-        <h2>All Categories</h2>
-        {% if categories and categories|length > 0 %}
-            <table>
-                <thead>
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead class="thead-light">
                     <tr>
-                        <th>Category Name</th>
-                        <th>Description</th>
-                        <th class="action-cell">Action</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col" style="width: 150px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for cat in categories %}
-                    <tr>
-                        <td>{{ cat['category'] }}</td>
-                        <td>{{ cat['description'] }}</td>
-                        <td class="action-cell">
-                            <form action="{{ url_for('viewCategory') }}" method="POST" style="display:inline;">
-                                <input type="hidden" name="category" value="{{ cat['category'] }}">
-                                <button type="submit">View Category</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                    {% if categories and categories|length > 0 %}
+                        {% for cat in categories %}
+                            <tr>
+                                <td>{{ cat['category'] }}</td>
+                                <td>{{ cat['description'] }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a class="btn btn-primary btn-sm" href="{{ url_for('viewCategory', category=cat['category']) }}">
+                                            View Details
+                                        </a>
+                                        <!-- Optional future action buttons -->
+                                        <!-- <a class="btn btn-warning btn-sm" href="#">Edit</a>
+                                        <a class="btn btn-danger btn-sm" href="#">Delete</a> -->
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No categories found in the system.</td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
-        {% else %}
-            <p class="no-categories">No categories found in the system.</p>
-        {% endif %}
-    </section>
-    
-    <div class="link">
-        <a href="/PM_main">Main Page</a>
+        </div>
     </div>
 </body>
 </html>
