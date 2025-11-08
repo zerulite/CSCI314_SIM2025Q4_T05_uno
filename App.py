@@ -4,6 +4,7 @@ from CreateReqCont import *
 from ViewReqCont import *
 from UpdateReqCont import *
 from DeleteReqCont import *
+from ViewAReqCont import *
 from SearchReqCont import *
 from ReqViewCountCont import *
 from ReqShortlistCountCont import *
@@ -147,6 +148,26 @@ def deleteReq():
         print(result)
 
     return render_template('deleteRequest.html', result=result)
+
+@app.route('/ViewAReq', methods=['GET'])
+def viewAReq():
+    controller = ViewAReqCont()
+    result = None
+    
+    # Get userID from session
+    # userID = session.get('userID')
+    # if not userID:
+    #     return redirect(url_for('login'))
+
+    response = controller.viewAReqCont(requestID, userID)
+
+    if response["type"] == "alert" or response["type"] == "error":
+        # Receives a message (alert/error)
+        result = response["message"]
+    elif response["type"] == "data":
+        result = response["rows"]
+
+    return render_template('viewARequest.html', results=result)
 
 @app.route('/SearchReq', methods=['GET', 'POST'])
 def searchReq():

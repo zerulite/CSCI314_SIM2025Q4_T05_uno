@@ -174,7 +174,7 @@ class Request:
         return {"message": f"Request #{requestID} deleted successfully!"}
 
     # Find a specified request's info from the table
-    def searchReq(self, requestID: str, userID: str):
+    def viewAReq(self, requestID: str, userID: str):
         # Checks if requestID was entered and if the requestID/userID exists in the table
         if len(requestID) == 0:
             return {"message": "Failed to find request: requestID field not filled."}
@@ -197,6 +197,34 @@ class Request:
         WHERE requestID = %s AND userID = %s"""
         values = (requestID, userID)
         return self.db.fetch(sql, values)
+    
+    def searchReq(self, **kwargs):
+        # Remove empty values
+        search_fields = {k: v for k, v in kwargs.items() if v}
+
+        # Return empty list if nothing to search
+        if not search_fields:
+            return {"message": "Failed to find a request: all fields empty."}
+
+        query = "SELECT * FROM Request WHERE 1=1"
+        params = []
+
+        for field in ['reqDescription', 'helpNeededDate', 'helpNeededTime', 'reqStatus', 'category']:
+            value = search_fields.get(field)
+            if value:
+                if field in ['reqDescription', 'category']:
+                    query += f" AND {field} LIKE %s"
+                    params.append(f"%{value}%")
+                else:
+                    query += f" AND {field} = %s"
+                    params.append(value)
+
+        result = self.db.fetch(query, params)
+
+        if len(result):
+            return result
+        else:
+            return {"message": "Failed to find a request: no matching request found."}
     
     # Returns nested list of requestID/viewCount tuples of all request associated with userID
     def reqViewCount(self, userID: str):
