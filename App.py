@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 userID = "U001"
 
-@app.route("/main")
+@app.route("/")
 def home():
     return render_template("helloworld.html")
 
