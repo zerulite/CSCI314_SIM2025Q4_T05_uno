@@ -29,7 +29,7 @@ def viewCreateReq():
     return render_template("createRequest.html", categoryList=categoryList)
 
 
-@app.route("/UpdateReqPg")
+@app.route("/ViewUpdateReqPg")
 def viewUpdateReq():
     requestID = request.args.get('requestID', '').strip()
     reqStatus = request.args.get('reqStatus', '').strip()

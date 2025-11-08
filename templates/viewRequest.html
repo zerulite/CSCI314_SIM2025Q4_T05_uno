@@ -20,10 +20,14 @@
         <div class="container">
             <h1 class="mt-5">View Requests</h1>
         </div>
-        
+
         <div class="container">
             <div class="btn-container mt-2">
-                <a href="/ViewCreateRequestPg" class="btn btn-primary float-right">Create Request</a>
+                <a
+                    href="/ViewCreateRequestPg"
+                    class="btn btn-primary float-right"
+                    >Create Request</a
+                >
             </div>
             <table class="table mt-2">
                 <thead>
@@ -43,19 +47,30 @@
                         <td>{{result[3]}}</td>
                         <td>{{result[7]}}</td>
                         <td>
-                            <a class="btn btn-primary" href="/UpdateReqPg?requestID={{ result[0] }}&reqStatus={{result[4]}}">Update Request</a>
-                            <form method="POST" action="/DeleteReq" style="display:inline;">
-                                <input type="hidden" name="requestID" value="{{ result[0] }}">
-                                <button type="submit" class="btn btn-danger">Delete Request</button>
+                            <a
+                                class="btn btn-primary"
+                                href="/ViewUpdateReqPg?requestID={{ result[0] }}&reqStatus={{result[4]}}"
+                                >Update Request</a
+                            >
+                            <form
+                                method="POST"
+                                action="/DeleteReq"
+                                style="display: inline"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="requestID"
+                                    value="{{ result[0] }}"
+                                />
+                                <button type="submit" class="btn btn-danger">
+                                    Delete Request
+                                </button>
                             </form>
-                            
                         </td>
                     </tr>
                     {%endfor%}
                 </tbody>
             </table>
-            
         </div>
-        
     </body>
 </html>
