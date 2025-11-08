@@ -1,4 +1,5 @@
 from flask import *
+from dateutil.parser import *
 
 from CreateReqCont import *
 from ViewReqCont import *
@@ -182,10 +183,19 @@ def searchReq():
     # if not userID:
     #     return redirect(url_for('login'))
 
-    if request.method == 'POST':
-        requestID = request.form.get('requestID', '').strip()
+    searchParams = {
+        'requestID': request.args.get('requestID', '').strip(),
+        'reqDescription': request.args.get('reqDescription', '').strip(),
+        'helpNeededDate': request.args.get('helpNeededDate', '').strip(),
+        'helpNeededTime': request.args.get('helpNeededTime', '').strip(),
+        'category': request.args.get('category', '').strip(),
+        'userID': userID
+    }
 
-        response = controller.searchReqCont(requestID, userID)
+    searchParams = {key: value for key, value in searchParams.items() if value}
+
+    if searchParams:
+        response = controller.searchReqCont(**searchParams)
 
         if response["type"] == "alert" or response["type"] == "error":
             # Receives a message (alert/error)
@@ -255,7 +265,6 @@ def viewCompletedReq():
 
     return render_template('viewCompletedRequests.html', result=result)
 
-@app.route('/SearchCompletedReq', methods=['GET', 'POST'])
 def searchCompletedReq():
     controller = SearchCompletedReqCont()
     result = None
@@ -265,10 +274,19 @@ def searchCompletedReq():
     # if not userID:
     #     return redirect(url_for('login'))
 
-    if request.method == 'POST':
-        requestID = request.form.get('requestID', '').strip()
+    searchParams = {
+        'requestID': request.args.get('requestID', '').strip(),
+        'reqDescription': request.args.get('reqDescription', '').strip(),
+        'helpNeededDate': request.args.get('helpNeededDate', '').strip(),
+        'helpNeededTime': request.args.get('helpNeededTime', '').strip(),
+        'category': request.args.get('category', '').strip(),
+        'userID': userID
+    }
 
-        response = controller.searchCompletedReqCont(requestID, userID)
+    searchParams = {key: value for key, value in searchParams.items() if value}
+
+    if searchParams:
+        response = controller.searchCompletedReqCont(**searchParams)
 
         if response["type"] == "alert" or response["type"] == "error":
             # Receives a message (alert/error)
@@ -276,7 +294,30 @@ def searchCompletedReq():
         elif response["type"] == "data":
             result = response["rows"]
 
-    return render_template('searchCompletedRequest.html', result=result)
+    return render_template('searchRequest.html', result=result)
+
+# @app.route('/SearchCompletedReq', methods=['GET', 'POST'])
+# def searchCompletedReq():
+#     controller = SearchCompletedReqCont()
+#     result = None
+
+#     # Get userID from session
+#     # userID = session.get('userID')
+#     # if not userID:
+#     #     return redirect(url_for('login'))
+
+#     if request.method == 'POST':
+#         requestID = request.form.get('requestID', '').strip()
+
+#         response = controller.searchCompletedReqCont(requestID, userID)
+
+#         if response["type"] == "alert" or response["type"] == "error":
+#             # Receives a message (alert/error)
+#             result = response["message"]
+#         elif response["type"] == "data":
+#             result = response["rows"]
+
+#     return render_template('searchCompletedRequest.html', result=result)
 
 #Main
 if __name__ == '__main__':

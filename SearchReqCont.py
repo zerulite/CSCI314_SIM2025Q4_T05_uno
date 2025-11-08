@@ -4,8 +4,8 @@ class SearchReqCont:
     def __init__(self):
         self.reqEntity = Request()
 
-    def searchReqCont(self, requestID: str, userID: str):
-        result = self.reqEntity.searchReq(requestID, userID)
+    def searchReqCont(self, **kwargs):
+        result = self.reqEntity.searchReq(**kwargs)
 
         if isinstance(result, dict):
             return {"type": "alert", "message": result.get("message")}
