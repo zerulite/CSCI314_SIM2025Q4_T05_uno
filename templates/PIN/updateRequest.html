@@ -26,7 +26,7 @@
                 >
             </div>
             <h1 class="mt-5">Update Help Request</h1>
-            <form method="POST" action="/UpdateReq">
+            <form method="POST" action="/PIN/UpdateReq">
                 <input type="hidden" name="requestID" value="{{ requestID }}" />
                 <input type="hidden" name="reqStatus" value="{{ reqStatus }}" />
 
@@ -78,7 +78,7 @@
                         required
                     />
                 </div>
-                <a class="btn btn-danger float-left" href="/ViewReq">
+                <a class="btn btn-danger float-left" href="/PIN/ViewReq">
                     Cancel Request
                 </a>
                 <button type="submit" class="btn btn-primary float-right">

@@ -12,7 +12,7 @@ class Database:
                 host="127.0.0.1",
                 port=3306,
                 user="root",
-                password="Keith684485",  
+                password="0000",  
                 database="csit314",
                 autocommit=True,         
             )

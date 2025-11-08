@@ -29,7 +29,7 @@
         <div class="container">
             <div class="btn-container mt-2">
                 <a
-                    href="/ViewCreateRequestPg"
+                    href="/PIN/ViewCreateRequestPg"
                     class="btn btn-primary float-right"
                     >Create Request</a
                 >
@@ -54,12 +54,12 @@
                         <td>
                             <a
                                 class="btn btn-primary"
-                                href="/ViewUpdateReqPg?requestID={{ result[0] }}&reqStatus={{result[4]}}"
+                                href="/PIN/ViewUpdateReqPg?requestID={{ result[0] }}&reqStatus={{result[4]}}"
                                 >Update Request</a
                             >
                             <form
                                 method="POST"
-                                action="/DeleteReq"
+                                action="/PIN/DeleteReq"
                                 style="display: inline"
                             >
                                 <input
@@ -73,7 +73,7 @@
                             </form>
                             <a
                                 class="btn btn-info"
-                                href="/ViewAReq?requestID={{ result[0] }}"
+                                href="/PIN/ViewAReq?requestID={{ result[0] }}"
                             >
                                 View More
                             </a>

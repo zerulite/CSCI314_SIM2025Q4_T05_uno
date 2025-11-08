@@ -26,7 +26,7 @@
                     </div>
             <h1 class="container mt-5 text-center">Completed Requests</h1>
             
-            {%if result|length==1%}
+            {%if result=="Failed to view request: User does not have any completed requests."%}
             <h3 class="container error text-center">No completed requests!</div>
             {%else%}
             <table class="table mt-2">
