@@ -17,19 +17,3 @@ CREATE TABLE UserAccount (
         ON UPDATE CASCADE
         ON DELETE SET NULL
 );
-
-CREATE TABLE Category (
-    category VARCHAR(20) PRIMARY KEY,
-    description VARCHAR(100)
-);
-
-CREATE TABLE Request (
-    requestID VARCHAR(20) PRIMARY KEY,
-    request VARCHAR(100),
-    date DATE,
-    time TIME,
-	category VARCHAR(20),
-    userID VARCHAR(20),
-    FOREIGN KEY (category) REFERENCES Category(category),
-    FOREIGN KEY (userID) REFERENCES UserAccount(userID)
-);
