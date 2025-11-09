@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profile Account Management</title>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous"
+    />
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 text-center">Profile Account Management</h1>
+
+        <div class="d-flex justify-content-end align-items-center mt-3">
+            <div class="btn-group">
+                <a class="btn btn-outline-secondary btn-sm" href="/adminHome">Main Page</a>
+            </div>
+        </div>
+
+        <div class="table-responsive mt-3">
+            <table class="table table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Profile</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" style="width: 150px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if profiles and profiles|length > 0 %}
+                        {% for profile in profiles %}
+                            <tr>
+                                <td>{{ profile['profile'] }}</td>
+                                <td>{{ profile['description'] }}</td>
+                                <td>{{ profile['profileState'] }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a class="btn btn-primary btn-sm" href="{{ url_for('viewProfile', profile=profile['profile']) }}">
+                                            View Details
+                                        </a>
+                                        <!-- Optional future action button -->
+                                        <!-- <a class="btn btn-warning btn-sm" href="#">Edit</a> -->
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No profiles found in the system.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

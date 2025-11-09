@@ -1,5 +1,7 @@
 from flask import *
-from dateutil.parser import *
+
+# Login
+from LoginCont import *
 
 # PIN
 from CreateReqCont import *
@@ -27,8 +29,8 @@ from CsrRepViewHistoryCont import CSRViewHistoryController
 from datetime import datetime
 
 
-# Main
-from LoginCont import *
+# User Account
+
 from CreateUserAcctCont import *
 from UpdateUserAcctCont import *
 from ViewUserAcctCont import *
@@ -41,6 +43,8 @@ from ListUserProfileCont import *
 from UpdateUserProfileCont import *
 from SuspendUserProfileCont import *
 from SearchUserProfileCont import *
+
+#Platform Management
 from CreateCategoryCont import *
 from ViewCategoryCont import *
 from ListCategoryCont import *
@@ -368,21 +372,6 @@ def _parse_time(s):
     print("WARN: bad time format:", s)
     return None
 
-@app.route("/dev/login/<user_id>")
-def dev_login(user_id):
-    session["userID"] = user_id.strip()
-    return redirect(url_for("home"))
-
-@app.route("/dev/logout")
-def dev_logout():
-    session.pop("userID", None)
-    flash("Logged out")
-    return redirect(url_for("home"))
-
-@app.route("/CSR/Home")
-def csrhome():
-    return render_template("/CSR/Csr_Home.html")
-
 #Search New Request
 @app.route("/CSR/Search", methods=["GET"])
 def csrSearchNewRequests():
@@ -422,10 +411,10 @@ def csrSearchNewRequests():
 def csrViewRequestIndividual(request_id):
     row = csr_view_individual_cont.viewIndividualRequest(request_id)
     if not row:
-        from flask import flash, redirect, url_for
         flash("Request not found.")
         return redirect(url_for("csrListAllRequests"))
     return render_template("/CSR/Csr_View_Individual.html", row=row)
+
 
 #View All Requests
 @app.route("/CSR/Requests", methods=["GET"])
@@ -443,18 +432,14 @@ def addToShortlistStatus(request_id):
     if not csr_user_id:
         flash("Please log in as CSR to shortlist.")
         return redirect(referer or url_for("home"))
-
     status = csr_shortlist_status_cont.addToShortlistStatus(request_id, csr_user_id)
-
     if status == "added":
         flash("Shortlisted successful.")
-    elif status == "exists":
+    elif status == "exists": 
         flash("Already shortlisted.")
-    else:
+    else: 
         flash("Shortlist failed. Please try again.")
-
     return redirect(referer or url_for("csrSearchShortlisted"))
-
 
 #Shortlist
 @app.route("/CSR/SearchShortlist", methods=["GET"])
@@ -551,7 +536,7 @@ def userLogin():
         userID = request.form['userID']
         password = request.form['password']
         
-        result = controller.login_user(userID, password)
+        result = controller.loginUser(userID, password)
 
         if result["success"]:
             user = result["user"]
@@ -560,13 +545,13 @@ def userLogin():
             flash(result["message"], "success")
 
             if user["profile"] == "CSR Representative":
-                return redirect(url_for('CSRMain'))
+                return redirect(url_for('CSRHome'))
             elif user["profile"] == "Platform Management":
                 return redirect(url_for('PMHome'))
             elif user["profile"] == "User Admin":
                 return redirect(url_for('adminHome'))
             elif user["profile"] == "Person In Need":
-                return redirect(url_for('PIN_main'))
+                return redirect(url_for('PINHome'))
             else:
                 return redirect(url_for('dashboard'))
         else:
@@ -582,13 +567,13 @@ def userLogout():
     flash("You have been logged out.", "info")
     return redirect(url_for('userLogin'))
 
-@app.route('/csr_main')
-def CSRMain():
+@app.route('/CSRHome')
+def CSRHome():
     # Optional: check session/profile
     if 'profile' not in session or session['profile'] != "CSR Representative":
         flash("Access denied.", "danger")
         return redirect(url_for('login'))
-    return render_template('csr_main.html')
+    return render_template('/CSR/csr_Home.html')
 
 
 @app.route('/PMHome')
@@ -607,12 +592,12 @@ def adminHome():
     return render_template('/UserAdmin/adminHome.html')
 
 
-@app.route('/PIN_main')
-def PIN_main():
+@app.route('/PINHome')
+def PINHome():
     if 'profile' not in session or session['profile'] != "Person In Need":
         flash("Access denied.", "danger")
         return redirect(url_for('login'))
-    return render_template('PIN_main.html')
+    return render_template('/PIN/PINHome.html')
 
 #Create User Account
 @app.route('/createUserAcct', methods=['GET', 'POST'])
@@ -823,13 +808,9 @@ def searchProfile():
 
         # Perform search
         controller = SearchUserProfile()
-        profiles_data = controller.searchProfile(form_data)
+        profiles_data = controller.searchProfiles(form_data)
 
-    return render_template(
-        "searchUserProfile.html",
-        profiles=profiles_data,
-        **form_data
-    )
+    return render_template("/UserAdmin/searchUserProfile.html",profiles=profiles_data,**form_data)
 
 
 #Platform Management

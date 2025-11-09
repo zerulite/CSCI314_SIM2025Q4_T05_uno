@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>User Account Management</title>
+
+    <!-- Bootstrap 4 -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous"
+    />
+
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            position: relative;
+        }
+
+        .user-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        /* Logout button positioned at top-right of page */
+        .top-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .btn-container .btn {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top-right logout -->
+    <div class="top-right">
+        <a href="{{ url_for('userLogout') }}" class="btn btn-danger btn-sm">Logout</a>
+    </div>
+
+    <div class="card user-card">
+        <h1 class="h4 text-center mb-4">User Account Management</h1>
+
+        <div class="btn-container">
+            <a href="{{ url_for('createUserAcct') }}" class="btn btn-outline-secondary btn-block">Create User</a>
+            <a href="{{ url_for('searchUsers') }}" class="btn btn-outline-secondary btn-block">Search User</a>
+            <a href="{{ url_for('listUsers') }}" class="btn btn-outline-secondary btn-block">View All Users</a>
+            <a href="{{ url_for('createProfile') }}" class="btn btn-outline-secondary btn-block">Create Profile</a>
+            <a href="{{ url_for('searchProfile') }}" class="btn btn-outline-secondary btn-block">Search Profile</a>
+            <a href="{{ url_for('listProfiles') }}" class="btn btn-outline-secondary btn-block">View All Profiles</a>
+        </div>
+    </div>
+</body>
+</html>

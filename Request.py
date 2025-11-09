@@ -459,19 +459,21 @@ class Request:
     # =================
 
     # Plan: user should not be able to pass anything; loading/pressing 'read more' should automatically call this method thus no return too
-    def incViewCount(self, requestID: str, userID: str):
+    def incViewCount(self, requestID: str):
+        requestID = self.strToIntConverter(requestID)
         sql = """UPDATE Request 
         SET viewCount = viewCount + 1 
-        WHERE requestID = %s AND userID = %s"""
-        values = (requestID, userID)
+        WHERE requestID = %s"""
+        values = (requestID,)
         self.db.execute(sql, values)
 
     # Plan: user should not be able to pass anything; pressing 'shortlist' should automatically call this method thus no return too
-    def incShortlistCount(self, requestID: str, userID: str):
+    def incShortlistCount(self, requestID: str):
+        requestID = self.strToIntConverter(requestID)
         sql = """UPDATE Request 
         SET shortlistCount = shortlistCount + 1 
-        WHERE requestID = %s AND userID = %s"""
-        values = (requestID, userID)
+        WHERE requestID = %s"""
+        values = (requestID,)
         self.db.execute(sql, values)
     
     #Search New Requests
@@ -502,12 +504,12 @@ class Request:
         print("RESULTS:", len(rows))
         return rows
 
-    #View Individual Request
     def view_individual_request(self, request_id: str):
-        sql = (
-            "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
-            "FROM `Request` r WHERE r.requestID = %s LIMIT 1"
-        )
+        self.incViewCount(request_id)
+        sql = ( "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i')"
+        "AS helpNeededTime, r.category, r.userID, r.reqStatus "
+        "FROM Request r WHERE r.requestID = %s LIMIT 1" 
+        ) 
         return self.db.fetch(sql, (str(request_id),))
 
     #View All Requests
@@ -520,16 +522,16 @@ class Request:
         )
         return self.db.fetch(sql, (int(limit), int(offset)))
     
-    #Shortlist Requests
     def add_to_shortlist(self, request_id: str, csr_user_id: str) -> bool:
-        sql = """
-            INSERT IGNORE INTO RequestShortlist (requestID, userID)
-            VALUES (%s, %s)
+        sql = """ 
+        INSERT IGNORE INTO RequestShortlist (requestID, userID) 
+        VALUES (%s, %s) 
         """
         params = (str(request_id), str(csr_user_id))
         affected = self.db.execute(sql, params)
         return affected > 0
     
+    #Shortlist status
     def shortlist_status(self, request_id: str, csr_user_id: str) -> str:
         try:
             affected = self.db.execute(
@@ -537,6 +539,7 @@ class Request:
                 (str(request_id), str(csr_user_id))
             )
             if affected == 1:
+                self.incShortlistCount(request_id)
                 return "added"
 
             exists = self.db.fetch(
@@ -657,6 +660,7 @@ class Request:
             "LIMIT %s OFFSET %s"
         )
         return self.db.fetch(sql, ("Completed", int(limit), int(offset)))
+        
     # Generate report by date
     def get_requests_by_date(self, date):
         query = """

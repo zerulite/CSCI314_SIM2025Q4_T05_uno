@@ -4,7 +4,7 @@ class UpdateUserAccount:
     def __init__(self):
         self.user_account = UserAccount()
     
-    def check_profile(self, profile):
+    def checkProfile(self, profile):
         response = self.user_account.check_profile(profile)
         return response
         
@@ -13,7 +13,7 @@ class UpdateUserAccount:
         return user_data
     
     def updateUserAccount(self, userID, password, name, email, profile, userState):
-        profile_check = self.check_profile(profile)
+        profile_check = self.checkProfile(profile)
         if not profile_check["success"]:
             return {"message": profile_check["message"]}
 

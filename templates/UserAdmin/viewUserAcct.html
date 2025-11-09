@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Details</title>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous"
+    />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,44 +56,62 @@
         .button-container {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
             margin-top: 25px;
         }
 
-        button {
+        .btn-custom-primary {
             background-color: #007bff;
             color: white;
-            border: none;
-            padding: 10px 20px;
             border-radius: 5px;
-            cursor: pointer;
+            padding: 6px 12px;
             font-size: 14px;
+            border: none;
             transition: 0.3s;
-            min-width: 120px;
         }
 
-        button:hover {
+        .btn-custom-primary:hover {
             background-color: #0056b3;
+            color: white;
         }
 
-        .back-link {
-            margin-top: 20px;
-            text-align: center;
+        .btn-custom-danger {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 5px;
+            padding: 6px 12px;
+            font-size: 14px;
+            border: none;
+            transition: 0.3s;
         }
 
-        a {
-            color: #007bff;
-            text-decoration: none;
-            transition: 0.2s;
-        }
-
-        a:hover {
-            text-decoration: underline;
+        .btn-custom-danger:hover {
+            background-color: #b02a37;
+            color: white;
         }
 
         .not-found {
             text-align: center;
             margin-top: 50px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .link-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .link-container a {
+            display: inline-block;
+            margin: 5px 0;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .link-container a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -103,27 +128,20 @@
                 <li><strong>Status:</strong> {{ user['userState'] }}</li>
             </ul>
 
+            <!-- Buttons centered at the bottom of the card -->
             <div class="button-container">
-                <!-- Update button -->
-                <form action="{{ url_for('updateAcct', userID=user['userID']) }}" method="GET">
-                    <button type="submit">Update User</button>
-                </form>
-                
-                <!-- Suspend button -->
-                <form action="{{ url_for('suspendAcct', userID=user['userID']) }}" method="GET">
-                    <button type="submit">Suspend User</button>
-                </form>
+                <a class="btn-custom-primary" href="{{ url_for('updateAcct', userID=user['userID']) }}">Update User</a>
+                <a class="btn-custom-danger" href="{{ url_for('suspendAcct', userID=user['userID']) }}">Suspend User</a>
             </div>
         </div>
     {% else %}
         <p class="not-found">User not found.</p>
     {% endif %}
 
-    <div class="back-link">
-        <a href="{{ url_for('listUsers') }}">← Back to All Users</a>
-    </div>
-    <div class="link">
-        <a href="/admin_main">Main Page</a>
+    <!-- Back and Main links -->
+    <div class="link-container">
+        <a href="{{ url_for('listUsers') }}">← Back to All Users</a><br>
+        <a href="/adminHome">Main Page</a>
     </div>
 </body>
 </html>

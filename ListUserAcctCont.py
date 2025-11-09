@@ -4,5 +4,5 @@ class ListUserAccount:
     def __init__(self):
         self.user_entity = UserAccount()
     
-    def list_acct(self):
+    def listAcct(self):
         return self.user_entity.list_acct()

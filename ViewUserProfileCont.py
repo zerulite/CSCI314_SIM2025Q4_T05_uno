@@ -4,5 +4,5 @@ class ViewUserProfile:
     def __init__(self):
         self.user_entity = UserProfile()
     
-    def view_user_profile(self, profile):
+    def viewUserProfile(self, profile):
         return self.user_entity.view_profile(profile)

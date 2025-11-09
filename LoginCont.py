@@ -4,5 +4,5 @@ class Login:
     def __init__(self):
         self.user_account = UserAccount()
 
-    def login_user(self, userID, password):
+    def loginUser(self, userID, password):
         return self.user_account.login(userID, password)

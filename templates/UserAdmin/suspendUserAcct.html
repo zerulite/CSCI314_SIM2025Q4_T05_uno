@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suspend User Account</title>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous"
+    />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #ffffff);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .suspend-card {
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            width: 600px;
+            margin-top: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            padding: 10px 12px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            font-size: 16px; /* increased font size */
+        }
+
+        input[readonly] {
+            background-color: #e9ecef; /* greyed out */
+            cursor: not-allowed;
+        }
+
+        .btn-custom-danger {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 5px;
+            padding: 12px 20px; /* bigger button */
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-custom-danger:hover {
+            background-color: #b02a37;
+            color: white;
+        }
+
+        .form-message {
+            margin-bottom: 1rem;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .form-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .form-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .link-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .link-container a {
+            display: inline-block;
+            margin: 5px 0;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .link-container a:hover {
+            text-decoration: underline;
+        }
+
+        .not-found {
+            text-align: center;
+            margin-top: 50px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Suspend User Account</h1>
+
+    {% if user %}
+        <div class="suspend-card">
+            <form action="{{ url_for('suspendAcct', userID=user.userID) }}" method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="userID">User ID</label>
+                        <input 
+                            type="text" 
+                            id="userID" 
+                            name="userID" 
+                            value="{{ user.userID }}" 
+                            readonly
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="userState">User State</label>
+                        <select id="userState" name="userState">
+                            <option value="Active" {% if user.userState == "Active" %}selected{% endif %}>Active</option>
+                            <option value="Inactive" {% if user.userState == "Inactive" %}selected{% endif %}>Inactive</option>
+                        </select>
+                        <input type="hidden" name="userState" value="{{ user.userState }}">
+                    </div>
+                </div>
+
+                {% if message %}
+                <div class="form-message {% if 'successfully' in message %}success{% else %}error{% endif %}">
+                    <p>{{ message }}</p>
+                </div>
+                {% endif %}
+
+                <button class="btn-custom-danger" type="submit">Suspend User</button>
+            </form>
+        </div>
+    {% else %}
+        <p class="not-found">User not found.</p>
+    {% endif %}
+
+    <div class="link-container">
+        <a href="{{ url_for('listUsers') }}">← Back to All Users</a><br>
+        <a href="/adminHome">Main Page</a>
+    </div>
+</body>
+</html>

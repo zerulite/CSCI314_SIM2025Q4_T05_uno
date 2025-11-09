@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Profiles</title>
+
+  <!-- Bootstrap 4 -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous"
+  />
+
+  <style>
+    .filter .form-control,
+    .filter .custom-select { min-width: 140px; }
+    .filter label { margin-bottom: .25rem; font-size: .9rem; }
+    .table-wrap { width: 100%; }
+    .table thead th, .table tbody td { padding: .85rem 1rem; font-size: 14.5px; }
+    .btn-toolbar .btn { margin-right: 0.25rem; margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body>
+  <div class="container my-4">
+    <h1 class="mt-3 mb-4 text-center">Search Profiles</h1>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <!-- Search Form -->
+        <form method="POST" action="{{ url_for('searchProfile') }}" class="mb-2">
+          <div class="d-flex flex-nowrap align-items-end overflow-auto filter flex-wrap">
+
+            <div class="form-group mr-2 mb-2">
+              <label for="profile">Profile</label>
+              <select id="profile" name="profile" class="custom-select custom-select-sm">
+                <option value="">--Select Profile--</option>
+                <option value="User Admin" {% if profile=='User Admin' %}selected{% endif %}>User Admin</option>
+                <option value="CSR Representative" {% if profile=='CSR Representative' %}selected{% endif %}>CSR Representative</option>
+                <option value="Person In Need" {% if profile=='Person In Need' %}selected{% endif %}>Person In Need</option>
+                <option value="Platform Management" {% if profile=='Platform Management' %}selected{% endif %}>Platform Management</option>
+              </select>
+            </div>
+
+            <div class="form-group mr-2 mb-2">
+              <label for="profileState">Profile State</label>
+              <select id="profileState" name="profileState" class="custom-select custom-select-sm">
+                <option value="">--Select State--</option>
+                <option value="Active" {% if profileState=='Active' %}selected{% endif %}>Active</option>
+                <option value="Inactive" {% if profileState=='Inactive' %}selected{% endif %}>Inactive</option>
+              </select>
+            </div>
+
+            <div class="form-group mr-2 mb-2 flex-grow-1">
+              <label for="description">Description</label>
+              <input 
+                id="description" 
+                name="description" 
+                type="text" 
+                class="form-control form-control-sm" 
+                placeholder="Enter description" 
+                value="{{ description or '' }}">
+            </div>
+
+          </div>
+
+          <div class="d-flex justify-content-end mt-2 btn-toolbar flex-wrap">
+            <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('listProfiles') }}">View All Profiles</a>
+            <a class="btn btn-outline-secondary btn-sm" href="/adminHome">Main Page</a>
+            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+          </div>
+        </form>
+
+        <!-- Search Results Table -->
+        {% if profiles %}
+        <div class="table-responsive mt-3 table-wrap">
+          <table class="table table-striped table-bordered mb-0">
+            <thead class="thead-light">
+              <tr>
+                <th>Profile</th>
+                <th>Description</th>
+                <th>Profile State</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for profile in profiles %}
+                <tr>
+                  <td>{{ profile.profile }}</td>
+                  <td>{{ profile.description }}</td>
+                  <td>{{ profile.profileState }}</td>
+                  <td>
+                    <!-- View Details (POST) -->
+                    <form action="{{ url_for('viewProfile') }}" method="POST" style="display:inline;">
+                      <input type="hidden" name="profile" value="{{ profile.profile }}">
+                      <button type="submit" class="btn btn-sm btn-outline-primary">View Details</button>
+                    </form>
+
+                    <!-- Edit (GET) -->
+                    <a href="{{ url_for('updateProfile', profile=profile.profile) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+
+                    <!-- Suspend (GET) -->
+                    <a href="{{ url_for('suspendProfile', profile=profile.profile) }}" class="btn btn-sm btn-outline-warning">Suspend</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+          <p class="text-center text-muted mt-3">No results found</p>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

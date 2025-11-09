@@ -5,7 +5,7 @@ class SearchUserAccount:
         self.user_entity = UserAccount()
 
 
-    def search_users(self, search_fields: dict):
+    def searchUsers(self, search_fields: dict):
         #remove empty values
         search_fields = {k: v for k, v in search_fields.items() if v}
         # Call the entity method

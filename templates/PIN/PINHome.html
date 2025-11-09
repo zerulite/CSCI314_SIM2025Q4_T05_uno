@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View Request</title>
+
+  <!-- Bootstrap 4 -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous"
+  />
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 50px;
+      background-color: #f8f9fa;
+      position: relative;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    /* Top-right logout button */
+    .top-right {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+    }
+
+    .btn-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top-right logout -->
+  <div class="top-right">
+    <a href="{{ url_for('userLogout') }}" class="btn btn-danger">Logout</a>
+  </div>
+
+  <h1>Person-in-Need (PIN)</h1>
+
+  <div class="btn-container">
+    <a href="/PIN/ViewReq" class="btn btn-outline-secondary btn-lg btn-block">View All Requests</a>
+    <a href="/PIN/ReqViewCount" class="btn btn-outline-secondary btn-lg btn-block">View Request View Count</a>
+    <a href="/PIN/ReqShortlistCount" class="btn btn-outline-secondary btn-lg btn-block">View Request Shortlist Count</a>
+    <a href="/PIN/ViewCompletedReq" class="btn btn-outline-secondary btn-lg btn-block">View Completed Requests</a>
+    <a href="/PIN/SearchReq" class="btn btn-outline-secondary btn-lg btn-block">Search Request</a>
+  </div>
+</body>
+</html>
