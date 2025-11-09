@@ -12,7 +12,7 @@ class Database:
                 host="127.0.0.1",
                 port=3306,
                 user="root",
-                password="0000",  
+                password="Splatoon2!",  
                 database="csit314",
                 autocommit=True,         
             )
@@ -657,3 +657,109 @@ class Request:
             "LIMIT %s OFFSET %s"
         )
         return self.db.fetch(sql, ("Completed", int(limit), int(offset)))
+    # Generate report by date
+    def get_requests_by_date(self, date):
+        query = """
+        SELECT 
+            r.requestID, 
+            r.reqDescription, 
+            r.volunteer,
+            r.helpNeededDate, 
+            TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, 
+            c.category AS category_name,
+            u.name AS user_name, 
+            r.reqStatus
+        FROM Request r
+        LEFT JOIN Category c ON r.category = c.category
+        LEFT JOIN UserAccount u ON r.userID = u.userID
+        WHERE r.helpNeededDate = %s
+        ORDER BY r.helpNeededTime ASC
+        """
+        results = self.db.fetch(query, (date,))
+        return [
+            {
+                "Request ID": r[0],
+                "Description": r[1],
+                "Volunteer": r[2] if r[2] else "—",  # show dash if no volunteer assigned
+                "Date": r[3].strftime("%Y-%m-%d") if r[3] else "",
+                "Time": r[4] if r[4] else "",
+                "Category": r[5],
+                "User": r[6],
+                "Status": r[7]
+            }
+            for r in results
+        ]
+
+    # Generate report by week
+    def get_requests_by_week(self, week_start):
+        query = """
+        SELECT 
+            r.requestID, 
+            r.reqDescription, 
+            r.volunteer,
+            r.helpNeededDate, 
+            TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, 
+            c.category AS category_name,
+            u.name AS user_name, 
+            r.reqStatus
+        FROM Request r
+        LEFT JOIN Category c ON r.category = c.category
+        LEFT JOIN UserAccount u ON r.userID = u.userID
+        WHERE r.helpNeededDate BETWEEN %s AND DATE_ADD(%s, INTERVAL 6 DAY)
+        ORDER BY r.helpNeededDate, r.helpNeededTime ASC
+        """
+        results = self.db.fetch(query, (week_start, week_start))
+        return [
+            {
+                "Request ID": r[0],
+                "Description": r[1],
+                "Volunteer": r[2] if r[2] else "—",
+                "Date": r[3].strftime("%Y-%m-%d") if r[3] else "",
+                "Time": r[4] if r[4] else "",
+                "Category": r[5],
+                "User": r[6],
+                "Status": r[7]
+            }
+            for r in results
+        ]
+
+    # Generate report by Month
+    def get_requests_by_month(self, date):
+        """
+        Fetch all requests for the month of the given date.
+        `date` is expected to be a string in 'YYYY-MM-DD' format.
+        """
+        query = """
+        SELECT 
+            r.requestID, 
+            r.reqDescription, 
+            r.volunteer,
+            r.helpNeededDate, 
+            TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime,
+            c.category AS category_name,
+            u.name AS user_name, 
+            r.reqStatus
+        FROM Request r
+        LEFT JOIN Category c ON r.category = c.category
+        LEFT JOIN UserAccount u ON r.userID = u.userID
+        WHERE YEAR(r.helpNeededDate) = YEAR(%s) AND MONTH(r.helpNeededDate) = MONTH(%s)
+        ORDER BY r.helpNeededDate ASC, r.helpNeededTime ASC
+        """
+        results = self.db.fetch(query, (date, date))
+
+        report = []
+        for r in results:
+            report.append({
+                "Request ID": r[0],
+                "Description": r[1],
+                "Volunteer": r[2] if r[2] else "—",
+                "Date": r[3].strftime("%Y-%m-%d") if r[3] else "",
+                "Time": r[4] if r[4] else "",
+                "Category": r[5],
+                "User": r[6],
+                "Status": r[7]
+            })
+
+        return report
+
+
