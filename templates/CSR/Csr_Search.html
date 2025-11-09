@@ -1,0 +1,144 @@
+<!-- File: templates/Csr_Search.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Search New Volunteer Opportunities</title>
+
+  <!-- Bootstrap 4 -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous"
+  />
+  <style>
+    .filter .form-control,
+    .filter .custom-select { min-width: 140px; }
+    .filter label { margin-bottom: .25rem; font-size: .9rem; }
+    input[type="time"].form-control-sm {
+      line-height: 1.5;
+      height: calc(1.5em + .5rem + 2px);
+    }
+    .table-wrap { width: 100%; }
+    .table thead th, .table tbody td { padding: .85rem 1rem; font-size: 14.5px; }
+  </style>
+</head>
+<body>
+  <div class="container my-4">
+    <h1 class="mt-3 mb-4 text-center">Search New Volunteer Opportunities</h1>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <form method="get" action="/CSR/Search" class="mb-2">
+          <div class="d-flex flex-nowrap align-items-end overflow-auto filter">
+
+            <div class="form-group mr-2 mb-2">
+              <label for="requestID">RequestID</label>
+              <input id="requestID" name="requestID" class="form-control form-control-sm"
+                     value="{{ q.get('requestID','') }}">
+            </div>
+
+            <div class="form-group mr-2 mb-2">
+              <label for="request">Description</label>
+              <input id="request" name="request" class="form-control form-control-sm"
+                     value="{{ q.get('request','') }}">
+            </div>
+
+            <div class="form-group mr-2 mb-2">
+              <label for="volunteer">Volunteer</label>
+              <input id="volunteer" name="volunteer" class="form-control form-control-sm"
+                     value="{{ q.get('volunteer','') }}">
+            </div>
+
+            <div class="form-group mr-2 mb-2">
+              <label for="date">Date</label>
+              <input id="date" type="date" name="date" class="form-control form-control-sm"
+                     value="{{ q.get('date','') }}">
+            </div>
+
+            <div class="form-group mr-2 mb-2">
+              <label for="time">Time</label>
+              <input id="time" type="time" step="60" name="time" class="form-control form-control-sm"
+                     value="{{ (q.get('time')[:5]) if q.get('time') else '' }}">
+            </div>
+
+            <div class="form-group mr-2 mb-2">
+              <label for="category">Category</label>
+              <input id="category" name="category" class="form-control form-control-sm"
+                     value="{{ q.get('category','') }}">
+            </div>
+
+            <div class="form-group mr-2 mb-2">
+              <label for="userID">UserID</label>
+              <input id="userID" name="userID" class="form-control form-control-sm"
+                     value="{{ q.get('userID','') }}">
+            </div>
+          </div>
+
+          <!-- Right-aligned toolbar with all action buttons -->
+          <div class="d-flex justify-content-end mt-2">
+            <div class="btn-group">
+              <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('home') }}">Back to Home</a>
+              <a class="btn btn-outline-secondary btn-sm" href="/CSR/SearchShortlisted">Search Shortlist</a>
+              <a class="btn btn-outline-secondary btn-sm" href="/CSR/History">Search History</a>
+              <a class="btn btn-outline-secondary btn-sm" href="/CSR/Search">Reset</a>
+              <button type="submit" name="Search" value="1" class="btn btn-primary btn-sm">Search</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="table-responsive mt-3 table-wrap">
+          <table class="table table-striped table-bordered mb-0">
+            <thead class="thead-light">
+              <tr>
+                <th>RequestID</th>
+                <th>Description</th>
+                <th>Volunteer</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Category</th>
+                <th>UserID</th>
+                <th>Request Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if results and results|length > 0 %}
+                {% for row in results %}
+                  <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>
+                      {% if row[3].strftime is defined %}
+                        {{ row[3].strftime('%Y-%m-%d') }}
+                      {% else %}
+                        {{ row[3] }}
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if row[4].strftime is defined %}
+                        {{ row[4].strftime('%H:%M') }}
+                      {% else %}
+                        {{ (row[4] or '')[:5] }}
+                      {% endif %}
+                    </td>
+                    <td>{{ row[5] }}</td>
+                    <td>{{ row[6] }}</td>
+                    <td>{{ row[7] or '' }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr><td colspan="8" class="text-center text-muted">No results yet</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

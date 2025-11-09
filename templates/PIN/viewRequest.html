@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>View Request</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous"
+        />
+        <style>
+            h1 {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="btn-container mt-2">
+            <a href="{{url_for('home')}}" class="btn btn-primary float-right"
+                >Back to Home</a
+            >
+        </div>
+        <div class="container">
+            <h1 class="mt-5">View Requests</h1>
+        </div>
+
+        <div class="container">
+            <div class="btn-container mt-2">
+                <a
+                    href="/PIN/ViewCreateRequestPg"
+                    class="btn btn-primary float-right"
+                    >Create Request</a
+                >
+            </div>
+            <table class="table mt-2">
+                <thead>
+                    <tr>
+                        <th scope="col">Request Description</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for result in results%}
+                    <tr>
+                        <td>{{result[1]}}</td>
+                        <td>{{result[2]}}</td>
+                        <td>{{result[3]}}</td>
+                        <td>{{result[7]}}</td>
+                        <td>
+                            <a
+                                class="btn btn-primary"
+                                href="/PIN/ViewUpdateReqPg?requestID={{ result[0] }}&reqStatus={{result[4]}}"
+                                >Update Request</a
+                            >
+                            <form
+                                method="POST"
+                                action="/PIN/DeleteReq"
+                                style="display: inline"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="requestID"
+                                    value="{{ result[0] }}"
+                                />
+                                <button type="submit" class="btn btn-danger">
+                                    Delete Request
+                                </button>
+                            </form>
+                            <a
+                                class="btn btn-info"
+                                href="/PIN/ViewAReq?requestID={{ result[0] }}"
+                            >
+                                View More
+                            </a>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
