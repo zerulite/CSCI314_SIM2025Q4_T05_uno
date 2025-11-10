@@ -416,7 +416,7 @@ def csrViewRequestIndividual(request_id):
 
 #View All Requests
 @app.route("/CSR/Requests", methods=["GET"])
-def csrListAllRequests():
+def csrViewAllRequests():
     limit = int(request.args.get("limit", 100))
     offset = int(request.args.get("offset", 0))
     rows = csr_view_cont.viewAllRequests(limit=limit, offset=offset)
@@ -441,7 +441,7 @@ def addToShortlistStatus(request_id):
 
 #Shortlist
 @app.route("/CSR/SearchShortlist", methods=["GET"])
-def csrSearchShortlist():
+def csrShortlist():
     limit = int(request.args.get("limit", 100))
     offset = int(request.args.get("offset", 0))
     rows = csr_view_cont.viewAllRequests(limit=limit, offset=offset)
