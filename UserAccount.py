@@ -4,7 +4,7 @@ class Database:
     def __init__(self):
         self.host = "localhost"
         self.user = "root"
-        self.password = "Splatoon2!"
+        self.password = "0000"
         self.database = "csit314"
         self.connection = None
         self.cursor = None

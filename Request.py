@@ -12,7 +12,7 @@ class Database:
                 host="127.0.0.1",
                 port=3306,
                 user="root",
-                password="Splatoon2!",  
+                password="0000",  
                 database="csit314",
                 autocommit=True,         
             )
@@ -240,35 +240,6 @@ class Request:
             return result
         else:
             return {"message": "Failed to find a request: no matching request found."}
-
-    
-    # def searchReq(self, **kwargs):
-        # # Remove empty values
-        # search_fields = {k: v for k, v in kwargs.items() if v}
-
-        # # Return empty list if nothing to search
-        # if not search_fields:
-        #     return {"message": "Failed to find a request: all fields empty."}
-
-        # query = "SELECT * FROM Request WHERE 1=1"
-        # params = []
-
-        # for field in ['reqDescription', 'helpNeededDate', 'helpNeededTime', 'category']:
-        #     value = search_fields.get(field)
-        #     if value:
-        #         if field in ['reqDescription', 'category']:
-        #             query += f" AND {field} LIKE %s"
-        #             params.append(f"%{value}%")
-        #         else:
-        #             query += f" AND {field} = %s"
-        #             params.append(value)
-
-        # result = self.db.fetch(query, params)
-
-        # if len(result):
-        #     return result
-        # else:
-        #     return {"message": "Failed to find a request: no matching request found."}
     
     # Returns nested list of requestID/viewCount tuples of all request associated with userID
     def reqViewCount(self, userID: str):
@@ -338,36 +309,6 @@ class Request:
             return result
         else:
             return {"message": "Failed to find a request: no matching request found."}
-    
-    # Find a specified 'Completed' request's info from the table
-    # def searchCompletedReq(self, requestID: str, userID: str):
-    #     # Checks if requestID was entered and if the requestID/userID exists in the table
-    #     if len(requestID) == 0:
-    #         return {"message": "Failed to find request: requestID field not filled."}
-    #     else:
-    #         # Checks and converts requestID input
-    #         result = self.strToIntConverter(requestID)
-    #         if result:
-    #             requestID = result
-    #         else:
-    #             return {"message": "Failed to find request: requestID field incorrectly filled."}
-            
-    #         result = self.doesReqExist(requestID, userID)
-    #         if not (result):
-    #             return {"message": f"Failed to find request: requestID {requestID} not found for user {userID}."}
-        
-    #     # Finds 'Completed' request
-    #     # * covers: requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, viewCount, shortlistCount, category, userID, volunteer
-    #     sql = """SELECT * 
-    #     FROM Request
-    #     WHERE reqStatus = %s AND requestID = %s AND userID = %s"""
-    #     values = ('Completed', requestID, userID)
-    #     result = self.db.fetch(sql, values)
-
-    #     if len(result):
-    #         return result
-    #     else:
-    #         return {"message": f"Failed to find request: Request #{requestID} is not 'Completed'."}
     
 
     # ======================

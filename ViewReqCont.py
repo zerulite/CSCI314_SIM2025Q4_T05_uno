@@ -4,7 +4,7 @@ class ViewReqCont:
     def __init__(self):
         self.reqEntity = Request()
 
-    def viewReqCont(self, userID: str):
+    def viewReq(self, userID: str):
         result = self.reqEntity.viewReq(userID)
         
         if isinstance(result, dict):

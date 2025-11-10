@@ -4,7 +4,7 @@ class UpdateReqCont:
     def __init__(self):
         self.reqEntity = Request()
 
-    def updateReqCont(self, requestID: str, reqDescription: str, helpNeededDate: str, helpNeededTime: str, reqStatus: str, category: str, userID: str):
+    def updateReq(self, requestID: str, reqDescription: str, helpNeededDate: str, helpNeededTime: str, reqStatus: str, category: str, userID: str):
         result = self.reqEntity.updateReq(requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, userID)
         
         if isinstance(result, dict):

@@ -10,7 +10,7 @@ class Database:
             self.connection = mysql.connector.connect(
                 host="localhost",
                 user="root",
-                password="Splatoon2!", #Change this if needed
+                password="0000", #Change this if needed
                 database="csit314"
             )
             self.cursor = self.connection.cursor(dictionary=True)

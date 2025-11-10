@@ -4,7 +4,7 @@ class SearchReqCont:
     def __init__(self):
         self.reqEntity = Request()
 
-    def searchReqCont(self, **kwargs):
+    def searchReq(self, **kwargs):
         result = self.reqEntity.searchReq(**kwargs)
 
         if isinstance(result, dict):

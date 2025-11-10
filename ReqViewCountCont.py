@@ -4,7 +4,7 @@ class ReqViewCountCont:
     def __init__(self):
         self.reqEntity = Request()
 
-    def reqViewCountCont(self, userID: str):
+    def reqViewCount(self, userID: str):
         result = self.reqEntity.reqViewCount(userID)
 
         if isinstance(result, dict):

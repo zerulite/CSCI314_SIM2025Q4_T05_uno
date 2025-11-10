@@ -4,7 +4,7 @@ class ReqShortlistCountCont:
     def __init__(self):
         self.reqEntity = Request()
 
-    def reqShortlistCountCont(self, userID: str):
+    def reqShortlistCount(self, userID: str):
         result = self.reqEntity.reqShortlistCount(userID)
 
         if isinstance(result, dict):

@@ -4,7 +4,7 @@ class CreateReqCont:
     def __init__(self):
         self.reqEntity = Request()
 
-    def createReqCont(self, reqDescription: str, helpNeededDate: str, helpNeededTime: str, category: str, userID: str):
+    def createReq(self, reqDescription: str, helpNeededDate: str, helpNeededTime: str, category: str, userID: str):
         result = self.reqEntity.createReq(reqDescription, helpNeededDate, helpNeededTime, category, userID)
         
         if isinstance(result, dict):

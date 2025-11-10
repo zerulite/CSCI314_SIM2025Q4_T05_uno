@@ -4,7 +4,7 @@ class ViewCompletedReqCont:
     def __init__(self):
         self.reqEntity = Request()
 
-    def viewCompletedReqCont(self, userID: str):
+    def viewCompletedReq(self, userID: str):
         result = self.reqEntity.viewCompletedReq(userID)
 
         if isinstance(result, dict):

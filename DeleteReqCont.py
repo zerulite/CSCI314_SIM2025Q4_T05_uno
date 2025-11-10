@@ -4,7 +4,7 @@ class DeleteReqCont:
     def __init__(self):
         self.reqEntity = Request()
 
-    def deleteReqCont(self, requestID: str, userID: str):
+    def deleteReq(self, requestID: str, userID: str):
         result = self.reqEntity.deleteReq(requestID, userID)
 
         if isinstance(result, dict):

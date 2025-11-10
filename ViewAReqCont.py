@@ -4,7 +4,7 @@ class ViewAReqCont:
     def __init__(self):
         self.reqEntity = Request()
 
-    def viewAReqCont(self, requestID: str, userID: str):
+    def viewAReq(self, requestID: str, userID: str):
         result = self.reqEntity.viewAReq(requestID, userID)
         
         if isinstance(result, dict):
