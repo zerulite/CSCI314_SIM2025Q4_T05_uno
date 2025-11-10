@@ -5,4 +5,4 @@ class CSRViewNewController:
         self.request_entity = Request()
 
     def viewAllRequests(self, limit=100, offset=0):
-        return self.request_entity.view_all_requests(limit=limit, offset=offset)
+        return self.request_entity.viewAllRequests(limit=limit, offset=offset)

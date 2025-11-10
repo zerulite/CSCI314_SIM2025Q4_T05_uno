@@ -430,7 +430,7 @@ def addToShortlistStatus(request_id):
     if not csr_user_id:
         flash("Please log in as CSR to shortlist.")
         return redirect(referer or url_for("home"))
-    status = csr_shortlist_status_cont.addToShortlistStatus(request_id, csr_user_id)
+    status = csr_shortlist_status_cont.shortlistStatus(request_id, csr_user_id)
     if status == "added":
         flash("Shortlisted successful.")
     elif status == "exists": 
@@ -491,7 +491,7 @@ def csrViewShortlistRequests():
         return redirect(url_for("home"))
     limit = int(request.args.get("limit", 100))
     offset = int(request.args.get("offset", 0))
-    rows = csr_view_shortlist_cont.listShortlist(csr_user_id=csr_user_id, limit=limit, offset=offset)
+    rows = csr_view_shortlist_cont.viewShortlist(csr_user_id=csr_user_id, limit=limit, offset=offset)
     return render_template("/CSR/Csr_View_Shortlisted.html", results=rows, limit=limit, offset=offset)
 
 #Search History

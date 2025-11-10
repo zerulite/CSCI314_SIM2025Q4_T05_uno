@@ -6,4 +6,4 @@ class CSRSearchHistoryController:
 
     def searchHistory(self, **filters):
         # Entity enforces completed='Yes'
-        return self.request_entity.search_history(**filters)
+        return self.request_entity.searchHistory(**filters)

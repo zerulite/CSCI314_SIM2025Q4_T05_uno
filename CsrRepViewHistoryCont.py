@@ -6,4 +6,4 @@ class CSRViewHistoryController:
         self.request_entity = Request()
 
     def viewHistory(self, limit=100, offset=0):
-        return self.request_entity.view_history(limit=limit, offset=offset)
+        return self.request_entity.viewHistory(limit=limit, offset=offset)

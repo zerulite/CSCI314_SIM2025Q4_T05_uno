@@ -5,4 +5,4 @@ class CSRSearchShortlistController:
         self.request_entity = Request()
 
     def searchShortlisted(self, csr_user_id: str, **filters):
-        return self.request_entity.search_shortlisted(csr_user_id=csr_user_id, **filters)
+        return self.request_entity.searchShortlisted(csr_user_id=csr_user_id, **filters)

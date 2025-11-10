@@ -12,7 +12,7 @@ class Database:
                 host="127.0.0.1",
                 port=3306,
                 user="root",
-                password="Splatoon2!",  
+                password="Keith684485",  
                 database="csit314",
                 autocommit=True,         
             )
@@ -477,7 +477,7 @@ class Request:
         self.db.execute(sql, values)
     
     #Search New Requests
-    def search_new_request(self, **kwargs):
+    def searchNewRequest(self, **kwargs):
         base = (
             "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
@@ -504,7 +504,7 @@ class Request:
         print("RESULTS:", len(rows))
         return rows
 
-    def view_individual_request(self, request_id: str):
+    def viewIndividualRequest(self, request_id: str):
         self.incViewCount(request_id)
         sql = ( "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i')"
         "AS helpNeededTime, r.category, r.userID, r.reqStatus "
@@ -513,7 +513,7 @@ class Request:
         return self.db.fetch(sql, (str(request_id),))
 
     #View All Requests
-    def view_all_requests(self, limit=100, offset=0):
+    def viewAllRequests(self, limit=100, offset=0):
         sql = (
             "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
@@ -523,7 +523,7 @@ class Request:
         return self.db.fetch(sql, (int(limit), int(offset)))
     
     #Shortlist status
-    def shortlist_status(self, request_id: str, csr_user_id: str) -> str:
+    def shortlistStatus(self, request_id: str, csr_user_id: str) -> str:
         try:
             affected = self.db.execute(
                 "INSERT IGNORE INTO RequestShortlist (requestID, userID) VALUES (%s, %s)",
@@ -542,7 +542,7 @@ class Request:
             return "error"
 
     #Search Shorlist Requests
-    def search_shortlisted(
+    def searchShortlisted(
         self,
         csr_user_id,
         requestID=None,
@@ -602,7 +602,7 @@ class Request:
         return self.db.fetch(" ".join(sql), tuple(params))
     
     #View Shortlisted Requests
-    def view_shortlist(self, csr_user_id: str, limit=100, offset=0):
+    def viewShortlist(self, csr_user_id: str, limit=100, offset=0):
         sql = (
             "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
@@ -614,7 +614,7 @@ class Request:
         return self.db.fetch(sql, (csr_user_id, int(limit), int(offset)))
     
     #Search History
-    def search_history(self, **kwargs):
+    def searchHistory(self, **kwargs):
         base = (
             "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
@@ -642,7 +642,7 @@ class Request:
         return self.db.fetch(sql, params)
     
     #View History
-    def view_history(self, limit=100, offset=0):
+    def viewHistory(self, limit=100, offset=0):
         sql = (
             "SELECT r.requestID, r.reqDescription, r.volunteer, r.helpNeededDate, TIME_FORMAT(r.helpNeededTime, '%H:%i') AS helpNeededTime, r.category, r.userID, r.reqStatus "
             "FROM `Request` r "
