@@ -20,7 +20,6 @@ from GetCategoriesCont import *
 from CsrRepSearchNewCont import CSRSearchNewController
 from CsrRepViewIndividualCont import CSRViewIndividualController
 from CsrRepViewCont import CSRViewNewController
-from CsrRepShortlistCont import CSRShortlistController
 from CsrRepShortlistStatusCont import CSRShortlistStatusController
 from CsrRepSearchShortlistCont import CSRSearchShortlistController
 from CsrRepViewShortlistCont import CSRViewShortlistController
@@ -62,7 +61,6 @@ app.secret_key = "Spt2!31oon"
 csr_search_new_cont = CSRSearchNewController()
 csr_view_individual_cont = CSRViewIndividualController()
 csr_view_cont = CSRViewNewController()
-csr_shortlist_cont = CSRShortlistController()
 csr_shortlist_status_cont = CSRShortlistStatusController()
 csr_search_shortlisted_cont = CSRSearchShortlistController()
 csr_view_shortlist_cont = CSRViewShortlistController()

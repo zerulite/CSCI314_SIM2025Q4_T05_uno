@@ -522,15 +522,6 @@ class Request:
         )
         return self.db.fetch(sql, (int(limit), int(offset)))
     
-    def add_to_shortlist(self, request_id: str, csr_user_id: str) -> bool:
-        sql = """ 
-        INSERT IGNORE INTO RequestShortlist (requestID, userID) 
-        VALUES (%s, %s) 
-        """
-        params = (str(request_id), str(csr_user_id))
-        affected = self.db.execute(sql, params)
-        return affected > 0
-    
     #Shortlist status
     def shortlist_status(self, request_id: str, csr_user_id: str) -> str:
         try:
