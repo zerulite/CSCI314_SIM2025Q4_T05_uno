@@ -23,6 +23,13 @@
       justify-content: center;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
+
+    .top-right {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
     .csr-card {
       width: 100%;
       max-width: 400px;
@@ -30,6 +37,10 @@
   </style>
 </head>
 <body>
+  <div class="top-right">
+        <a href="{{ url_for('userLogout') }}" class="btn btn-danger btn-sm">Logout</a>
+  </div>
+
   <div class="card csr-card p-4">
     <h1 class="h4 text-center mb-4">CSR Representative</h1>
 
