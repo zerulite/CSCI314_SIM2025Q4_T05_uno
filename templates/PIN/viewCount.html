@@ -20,11 +20,15 @@
     <body>
         <div class="container">
             <div class="btn-container mt-2">
-                <a href="{{url_for('PINHome')}}" class="btn btn-primary float-right"
+                <a
+                    href="{{url_for('PINHome')}}"
+                    class="btn btn-primary float-right"
                     >Back to Home</a
                 >
             </div>
-            <h1 class="container mt-5 text-center">My Service Requests</h1>
+            <h1 class="container mt-5 text-center">
+                My Service Requests View Counts
+            </h1>
             <div class="container text-center">
                 <table class="table mt-2">
                     <thead>
@@ -37,26 +41,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% if results and results|length > 0 %}
-                            {% for row in results %}
-                            <tr>
-                                <td>{{ row[1] }}</td>
-                                <td>{{ row[2] }}</td>
-                                <td>{{ row[3] }}</td>
-                                <td>{{ row[7] }}</td>
-                                <td>{{ row[5] }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="5" class="text-center text-muted">
-                                    {% if message %}
-                                        <span class="text-danger">{{ message }}</span>
-                                    {% else %}
-                                        No request data available.
-                                    {% endif %}
-                                </td>
-                            </tr>
+                        {% if results and results|length > 0 %} {% for row in
+                        results %}
+                        <tr>
+                            <td>{{ row[1] }}</td>
+                            <td>{{ row[2] }}</td>
+                            <td>{{ row[3] }}</td>
+                            <td>{{ row[7] }}</td>
+                            <td>{{ row[5] }}</td>
+                        </tr>
+                        {% endfor %} {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">
+                                {% if message %}
+                                <span class="text-danger">{{ message }}</span>
+                                {% else %} No request data available. {% endif
+                                %}
+                            </td>
+                        </tr>
                         {% endif %}
                         <!-- {%for row in result%}
                         <tr>
