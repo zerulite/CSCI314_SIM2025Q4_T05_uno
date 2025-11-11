@@ -5,4 +5,4 @@ class GenerateWeeklyReport:
         self.entity = Request()
 
     def generateWeeklyReport(self, week_start):
-        return self.entity.get_requests_by_week(week_start)
+        return self.entity.generateWeeklyReport(week_start)

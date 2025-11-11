@@ -5,4 +5,4 @@ class Login:
         self.user_account = UserAccount()
 
     def loginUser(self, userID, password):
-        return self.user_account.login(userID, password)
+        return self.user_account.loginUser(userID, password)

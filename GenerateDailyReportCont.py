@@ -5,4 +5,4 @@ class GenerateDailyReport:
         self.entity = Request()
 
     def generateDailyReport(self, date):
-        return self.entity.get_requests_by_date(date)
+        return self.entity.generateDailyReport(date)

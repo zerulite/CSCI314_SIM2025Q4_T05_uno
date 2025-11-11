@@ -5,4 +5,4 @@ class GenerateMonthlyReport:
         self.entity = Request()
 
     def generateMonthlyReport(self, date):
-        return self.entity.get_requests_by_month(date)
+        return self.entity.generateMonthlyReport(date)

@@ -9,4 +9,4 @@ class SearchCategory:
         #remove empty values
         search_fields = {k: v for k, v in search_fields.items() if v}
         # Call the entity method
-        return self.category.search_category(**search_fields)
+        return self.category.searchCategory(**search_fields)
