@@ -149,7 +149,9 @@
             </div>
             {% endif %}
 
-            <form action="{{ url_for('deleteCategory', category=category.category) }}" method="POST">
+            <!-- <form action="{{ url_for('deleteCategory', category=category.category) }}" method="POST"> -->
+            <form action="{{ url_for('deleteCategory') }}" method="POST">
+                <input type="hidden" name="category" value="{{ category.category }}">
                 <div class="form-group">
                     <label for="category">Category Name</label>
                     <input

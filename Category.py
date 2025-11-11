@@ -75,12 +75,12 @@ class Category:
 
     #Update Category
     def update_category(self, category, description):
-        check_sql = "SELECT * FROM Category WHERE userID = %s"
+        check_sql = "SELECT * FROM Category WHERE category = %s"
         if self.db.fetch(check_sql, (category,)):
             sql = """UPDATE Category
                      SET description=%s
                      WHERE category=%s"""
-            values = (category, description)
+            values = (description, category)
             self.db.execute(sql, values)
             return {"message": f"Category {category} updated successfully."}
         else:

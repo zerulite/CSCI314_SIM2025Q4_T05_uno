@@ -8,7 +8,7 @@ class UpdateUserProfile:
         profile_data = self.user_profile.view_profile(profile)
         return profile_data
     
-    def updateUserProfile(self, profile, description):
-        response = self.user_profile.update_profile(profile, description)
+    def updateUserProfile(self, profile, description, profileState):
+        response = self.user_profile.update_profile(profile, description, profileState)
         return response
     

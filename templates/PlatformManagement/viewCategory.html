@@ -128,7 +128,15 @@
             <!-- Buttons centered at the bottom of the card -->
             <div class="button-container">
                 <a class="btn-custom-primary" href="{{ url_for('updateCategory', category=category['category']) }}">Update Category</a>
-                <a class="btn-custom-danger" href="{{ url_for('deleteCategory', category=category['category']) }}" onclick="return confirm('Are you sure you want to delete this category?');">Delete Category</a>
+                <!-- <a class="btn-custom-danger" href="{{ url_for('deleteCategory', category=category['category']) }}" onclick="return confirm('Are you sure you want to delete this category?');">Delete Category</a> -->
+                <form action="{{ url_for('deleteCategory') }}" method="POST" style="display:inline;">
+                    <input type="hidden" name="category" value="{{ category['category'] }}">
+                    <button type="submit" class="btn-custom-danger"
+                        onclick="return confirm('Are you sure you want to delete this category?');">
+                        Delete Category
+                    </button>
+                </form>
+ 
             </div>
         </div>
     {% else %}

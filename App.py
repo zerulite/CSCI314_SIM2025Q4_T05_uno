@@ -844,7 +844,7 @@ def viewCategory():
 
 
 #List of all User Profile
-@app.route('/listCategories')
+@app.route('/listCategories', endpoint='listCategory')
 def listCategory():
     controller = ListCategory()
     categories = controller.listCategory()
@@ -873,7 +873,7 @@ def updateCategory(category):
 @app.route('/deleteCategory', methods=['POST'])
 def deleteCategory():
     controller = DeleteCategory()
-    category = request.args.get('category') or request.form.get('category')
+    category = request.form.get('category') # or request.args.get('category')
     response = controller.deleteCategory(category)
 
     if response["success"]:
@@ -881,7 +881,7 @@ def deleteCategory():
     else:
         flash(response["message"], "error")
 
-    return redirect(url_for('/PlatformManagement/listCategory'))
+    return redirect(url_for('listCategory', _external=False))
 
 #Search Categories
 @app.route('/searchCategory', methods=['GET', 'POST'])
