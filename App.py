@@ -76,7 +76,7 @@ def home():
 def viewCreateReq():
     controller = GetCategoriesCont()
     categoryList = controller.getCategoriesCont()
-    print(categoryList)
+    # print(categoryList)
 
     return render_template("/PIN/createRequest.html", categoryList=categoryList)
 
@@ -110,7 +110,7 @@ def createReq():
         helpNeededTime = request.form.get('helpNeededTime', '').strip()
         category = request.form.get('category', '').strip()
 
-        response = controller.createReqCont(reqDescription, helpNeededDate, helpNeededTime, category, userID)
+        response = controller.createReq(reqDescription, helpNeededDate, helpNeededTime, category, userID)
 
         if response["type"] == "alert" or response["type"] == "error":
             # Receives a message (alert/error)
@@ -124,22 +124,24 @@ def createReq():
 @app.route('/PIN/ViewReq', methods=['GET'])
 def viewReq():
     controller = ViewReqCont()
-    result = None
     
     # Get userID from session
     userID = session.get('userID')
     if not userID:
         return redirect(url_for('login'))
 
-    response = controller.viewReqCont(userID)
+    response = controller.viewReq(userID)
+
+    results =[]
+    message = None
 
     if response["type"] == "alert" or response["type"] == "error":
         # Receives a message (alert/error)
-        result = response["message"]
+        message = response["message"]
     elif response["type"] == "data":
-        result = response["rows"]
+        results = response["rows"]
 
-    return render_template('/PIN/viewRequest.html', results=result)
+    return render_template('/PIN/viewRequest.html', results=results, message=message)
 
 @app.route('/PIN/UpdateReq', methods=['GET', 'POST'])
 def updateReq():
@@ -161,7 +163,7 @@ def updateReq():
 
         print(requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, category)
         
-        response = controller.updateReqCont(requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, userID)
+        response = controller.updateReq(requestID, reqDescription, helpNeededDate, helpNeededTime, reqStatus, category, userID)
 
         if response["type"] == "alert" or response["type"] == "error":
             # Receives a message (alert/error)
@@ -188,7 +190,7 @@ def deleteReq():
         requestID = request.form.get('requestID', '').strip()
         print(requestID)
 
-        response = controller.deleteReqCont(requestID, userID)
+        response = controller.deleteReq(requestID, userID)
 
         if response["type"] == "alert" or response["type"] == "error":
             # Receives a message (alert/error)
@@ -212,7 +214,7 @@ def viewAReq():
     if not userID:
         return redirect(url_for('login'))
 
-    response = controller.viewAReqCont(requestID, userID)
+    response = controller.viewAReq(requestID, userID)
 
     if response["type"] == "alert" or response["type"] == "error":
         # Receives a message (alert/error)
@@ -225,7 +227,8 @@ def viewAReq():
 @app.route('/PIN/SearchReq', methods=['GET'])
 def searchReq():
     controller = SearchReqCont()
-    result = None
+    results = []
+    message = None
 
     # Get userID from session
     userID = session.get('userID')
@@ -244,80 +247,84 @@ def searchReq():
     searchParams = {key: value for key, value in searchParams.items() if value}
 
     if searchParams:
-        response = controller.searchReqCont(**searchParams)
+        response = controller.searchReq(**searchParams)
 
-        if response["type"] == "alert" or response["type"] == "error":
+        if response["type"] in ["alert", "error"]:
             # Receives a message (alert/error)
-            result = response["message"]
+            message = response["message"]
         elif response["type"] == "data":
-            result = response["rows"]
+            results = response["rows"]
 
-    return render_template('/PIN/searchRequest.html', results=result, q=searchParams)
+    return render_template('/PIN/searchRequest.html', results=results, message=message, q=searchParams)
 
 @app.route('/PIN/ReqViewCount', methods=['GET'])
 def reqViewCount():
     controller = ReqViewCountCont()
-    result = None
+    results = []
+    message = None
 
     # Get userID from session
     userID = session.get('userID')
     if not userID:
         return redirect(url_for('login'))
 
-    response = controller.reqViewCountCont(userID)
+    response = controller.reqViewCount(userID)
 
-    if response["type"] == "alert" or response["type"] == "error":
+    if response["type"] in ["alert", "error"]:
         # Receives a message (alert/error)
-        result = response["message"]
+        message = response["message"]
     elif response["type"] == "data":
-        result = response["rows"]
+        results = response["rows"]
 
-    return render_template('/PIN/viewCount.html', result=result)
+    return render_template('/PIN/viewCount.html', results=results, message=message)
 
 @app.route('/PIN/ReqShortlistCount', methods=['GET'])
 def reqShortlistCount():
     controller = ReqShortlistCountCont()
-    result = None
+    results = []
+    message = None
 
     # Get userID from session
     userID = session.get('userID')
     if not userID:
         return redirect(url_for('login'))
 
-    response = controller.reqShortlistCountCont(userID)
+    response = controller.reqShortlistCount(userID)
 
-    if response["type"] == "alert" or response["type"] == "error":
+    if response["type"] in ["alert", "error"]:
         # Receives a message (alert/error)
-        result = response["message"]
+        message = response["message"]
     elif response["type"] == "data":
-        result = response["rows"]
+        results = response["rows"]
 
-    return render_template('/PIN/shortlistCount.html', result=result)
+    return render_template('/PIN/shortlistCount.html', results=results, message=message)
 
 @app.route('/PIN/ViewCompletedReq', methods=['GET'])
 def viewCompletedReq():
     controller = ViewCompletedReqCont()
-    result = None
+    results = []
+    message = None
 
     # Get userID from session
     userID = session.get('userID')
     if not userID:
         return redirect(url_for('login'))
 
-    response = controller.viewCompletedReqCont(userID)
+    response = controller.viewCompletedReq(userID)
 
-    if response["type"] == "alert" or response["type"] == "error":
+    if response["type"] in ["alert", "error"]:
         # Receives a message (alert/error)
-        result = response["message"]
+        message = response["message"]
     elif response["type"] == "data":
-        result = response["rows"]
+        results = response["rows"]
 
-    return render_template('/PIN/viewCompletedRequests.html', result=result)
+    return render_template('/PIN/viewCompletedRequests.html', results=results, message=message)
 
 @app.route('/PIN/SearchCompletedReq', methods=['GET'])
 def searchCompletedReq():
     controller = SearchCompletedReqCont()
-    result = None
+    results = []
+    message = None
 
     # Get userID from session
     userID = session.get('userID')
@@ -336,15 +343,15 @@ def searchCompletedReq():
     searchParams = {key: value for key, value in searchParams.items() if value}
 
     if searchParams:
-        response = controller.searchCompletedReqCont(**searchParams)
+        response = controller.searchCompletedReq(**searchParams)
 
-        if response["type"] == "alert" or response["type"] == "error":
+        if response["type"] in ["alert", "error"]:
             # Receives a message (alert/error)
-            result = response["message"]
+            message = response["message"]
         elif response["type"] == "data":
-            result = response["rows"]
+            results = response["rows"]
 
-    return render_template('/PIN/searchCompletedRequest.html', results=result, q=searchParams)
+    return render_template('/PIN/searchCompletedRequest.html', results=results, message=message, q=searchParams)
 
 
 def _parse_date(s):
