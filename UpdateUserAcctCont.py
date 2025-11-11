@@ -9,7 +9,7 @@ class UpdateUserAccount:
         return response
         
     def getUserByID(self, userID):
-        user_data = self.user_account.view_acct(userID)
+        user_data = self.user_account.viewUserAccount(userID)
         return user_data
     
     def updateUserAccount(self, userID, password, name, email, profile, userState):
@@ -17,6 +17,6 @@ class UpdateUserAccount:
         if not profile_check["success"]:
             return {"message": profile_check["message"]}
 
-        response = self.user_account.update_acct(userID, password, name, email, profile, userState)
+        response = self.user_account.updateUserAccount(userID, password, name, email, profile, userState)
         return response
     

@@ -10,8 +10,8 @@ class Database:
             self.connection = mysql.connector.connect(
                 host="localhost",
                 user="root",
-                password="0000", #Change this if needed
-                database="csitc"
+                password="Splatoon2!", #Change this if needed
+                database="csit314"
             )
             self.cursor = self.connection.cursor(dictionary=True)
             print("Database connected successfully!")
@@ -46,7 +46,7 @@ class UserProfile:
         self.db = Database()
 
     # Create Profile
-    def create_profile(self, profile, description, profileState):
+    def createUserProfile(self, profile, description, profileState):
         # Check if any field is empty
         if not all([profile, description, profileState]):
             return {"message": "Failed to create user: all fields are required."}
@@ -63,7 +63,7 @@ class UserProfile:
         return {"message": f"Profile {profile} successfully created."}
     
     #View Profile
-    def view_profile(self, profile):
+    def viewUserProfile(self, profile):
         sql = "SELECT * FROM UserProfile WHERE profile = %s"
         result = self.db.fetch(sql, (profile,))
         if not result:
@@ -71,12 +71,12 @@ class UserProfile:
         return result[0]
 
     # List all Profiles
-    def list_profile(self):
+    def listProfile(self):
         sql = "SELECT * FROM UserProfile"
         return self.db.fetch(sql)
     
     #Update Profile
-    def update_profile(self, profile, description, profileState):
+    def updateUserProfile(self, profile, description, profileState):
         check_sql = "SELECT * FROM UserProfile WHERE profile = %s"
         if self.db.fetch(check_sql, (profile,)):
             sql = """UPDATE UserProfile
@@ -89,7 +89,7 @@ class UserProfile:
             return {"message": f"Profile {profile} update failed — not found."}
 
     #Suspend Profile
-    def suspend_profile(self, profile, profileState):
+    def suspendUserProfile(self, profile, profileState):
         # Normalize case
         profileState = profileState.lower()
 
@@ -118,7 +118,7 @@ class UserProfile:
         }
 
     #Search User Profile
-    def search_profiles(self, **kwargs):
+    def searchProfiles(self, **kwargs):
     # Remove empty values
         search_fields = {k: v for k, v in kwargs.items() if v}
 

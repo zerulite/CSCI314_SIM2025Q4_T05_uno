@@ -9,6 +9,6 @@ class SuspendUserAccount:
         return user_data
     
     def suspendUserAccount(self, userID, userState):
-        response = self.user_account.suspend_acct(userID, userState)
+        response = self.user_account.suspendUserAccount(userID, userState)
         return response
     

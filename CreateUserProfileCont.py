@@ -5,5 +5,5 @@ class CreateUserProfile:
         self.user_profile = UserProfile()
 
     def createUserProfile(self, profile, description, profileState):
-        response = self.user_profile.create_profile(profile, description, profileState)
+        response = self.user_profile.createUserProfile(profile, description, profileState)
         return response
