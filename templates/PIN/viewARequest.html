@@ -22,46 +22,54 @@
                 >Back to Home</a
             >
         </div>
-        
+
         <div class="container">
             <h1 class="mt-5">View Request</h1>
         </div>
         {%for r in result%}
         <div class="container d-flex flex-column align-items-center">
+            <table class="table table-bordered w-75 mt-3">
+                <tbody>
+                    <tr>
+                        <th class="font-weight-bold" style="width: 40%">
+                            Request ID:
+                        </th>
+                        <td>{{ r[0] }}</td>
+                    </tr>
+                    <tr>
+                        <th class="font-weight-bold">Description:</th>
+                        <td>{{ r[1] }}</td>
+                    </tr>
+                    <tr>
+                        <th class="font-weight-bold">Date:</th>
+                        <td>{{ r[2] }}</td>
+                    </tr>
+                    <tr>
+                        <th class="font-weight-bold">Time:</th>
+                        <td>{{ r[3] }}</td>
+                    </tr>
+                    <tr>
+                        <th class="font-weight-bold">Status:</th>
+                        <td>{{ r[4] }}</td>
+                    </tr>
+                    <tr>
+                        <th class="font-weight-bold">View Count:</th>
+                        <td>{{ r[5] }}</td>
+                    </tr>
+                    <tr>
+                        <th class="font-weight-bold">Shortlist Count:</th>
+                        <td>{{ r[6] }}</td>
+                    </tr>
+                    <tr>
+                        <th class="font-weight-bold">Category:</th>
+                        <td>{{ r[7] }}</td>
+                    </tr>
+                </tbody>
+            </table>
             <div class="row mt-3">
-                <div class="col font-weight-bold">Request ID:</div>
-                <div class="col">{{r[0]}}</div>
-            </div>
-            <div class="row mt-3">
-                <div class="col font-weight-bold">Description:</div>
-                <div class="col">{{r[1]}}</div>
-            </div>
-            <div class="row mt-3">
-                <div class="col" font-weight-bold">Date:</div>
-                <div class="col">{{r[2]}}</div>
-            </div>
-            <div class="row mt-3">
-                <div class="col" font-weight-bold">Time:</div>
-                <div class="col">{{r[3]}}</div>
-            </div>
-            <div class="row mt-3">
-                <div class="col" font-weight-bold">Status:</div>
-                <div class="col">{{r[4]}}</div>
-            </div>
-            <div class="row mt-3">
-                <div class="col" font-weight-bold">View Count:</div>
-                <div class="col">{{r[5]}}</div>
-            </div>
-            <div class="row mt-3">
-                <div class="col" font-weight-bold>Shortlist Count:</div>
-                <div class="col">{{r[6]}}</div>
-            </div>
-            <div class="row mt-3">
-                <div class="col" font-weight-bold">Category:</div>
-                <div class="col">{{r[7]}}</div>
-            </div>
-            <div class="row mt-3">
-                <a href="/PIN/ViewReq" class="btn btn-primary">Return to View Requests</a>
+                <a href="/PIN/ViewReq" class="btn btn-primary"
+                    >Return to View Requests</a
+                >
             </div>
         </div>
         {%endfor%}
