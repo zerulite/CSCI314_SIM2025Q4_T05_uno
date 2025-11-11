@@ -52,7 +52,31 @@
                         <td>{{ result[3] }}</td>
                         <td>{{ result[7] }}</td>
                         <td>
-                            <!-- Action buttons -->
+                            <a
+                                class="btn btn-primary"
+                                href="/PIN/ViewUpdateReqPg?requestID={{ result[0] }}&reqStatus={{result[4]}}"
+                                >Update Request</a
+                            >
+                            <form
+                                method="POST"
+                                action="/PIN/DeleteReq"
+                                style="display: inline"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="requestID"
+                                    value="{{ result[0] }}"
+                                />
+                                <button type="submit" class="btn btn-danger">
+                                    Delete Request
+                                </button>
+                            </form>
+                            <a
+                                class="btn btn-info"
+                                href="/PIN/ViewAReq?requestID={{ result[0] }}"
+                            >
+                                View More
+                            </a>
                         </td>
                     </tr>
                     {% endfor %} {% else %}
