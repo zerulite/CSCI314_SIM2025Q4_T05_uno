@@ -13,7 +13,7 @@ class Database:
                 port=3306,
                 user="root",
                 password="0000",  
-                database="csit314",
+                database="csitc",
                 autocommit=True,         
             )
             print("DB: connected (autocommit ON)")

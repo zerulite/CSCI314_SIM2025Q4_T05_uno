@@ -5,7 +5,7 @@ class Database:
         self.host = "localhost"
         self.user = "root"
         self.password = "0000"
-        self.database = "csit314"
+        self.database = "csitc"
         self.connection = None
         self.cursor = None
         self.connect()

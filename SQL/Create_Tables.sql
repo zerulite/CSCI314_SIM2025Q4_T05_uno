@@ -3,7 +3,8 @@ USE csit314;
 
 CREATE TABLE IF NOT EXISTS UserProfile (
     profile VARCHAR(50) PRIMARY KEY,
-    description VARCHAR(255)
+    description VARCHAR(255),
+    profileState VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS UserAccount (

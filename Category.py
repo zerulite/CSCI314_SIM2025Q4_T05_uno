@@ -11,7 +11,7 @@ class Database:
                 host="localhost",
                 user="root",
                 password="0000", #Change this if needed
-                database="csit314"
+                database="csitc"
             )
             self.cursor = self.connection.cursor(dictionary=True)
             print("Database connected successfully!")
