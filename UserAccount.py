@@ -4,8 +4,8 @@ class Database:
     def __init__(self):
         self.host = "localhost"
         self.user = "root"
-        self.password = "0000"
-        self.database = "csitc"
+        self.password = "Splatoon2!"
+        self.database = "csit314"
         self.connection = None
         self.cursor = None
         self.connect()
@@ -47,7 +47,7 @@ class UserAccount:
         self.db = Database()
 
     # Create Account
-    def create_acct(self, userID, password, name, email, profile, userState):
+    def createUserAccount(self, userID, password, name, email, profile, userState):
         # Check if any field is empty
         if not all([userID, password, name, email, profile, userState]):
             return {"message": "Failed to create user: all fields are required."}
@@ -71,7 +71,7 @@ class UserAccount:
         return {"message": f"User {userID} successfully created."}
 
     # View Account
-    def view_acct(self, userID):
+    def viewUserAccount(self, userID):
         sql = "SELECT * FROM UserAccount WHERE userID = %s"
         result = self.db.fetch(sql, (userID,))
         if not result:
@@ -79,12 +79,12 @@ class UserAccount:
         return result[0]
 
     # List all Accounts
-    def list_acct(self):
+    def listUserAccount(self):
         sql = "SELECT userID, name, email, profile, userState FROM UserAccount"
         return self.db.fetch(sql)
 
     # Update Account
-    def update_acct(self, userID, password, name, email, profile, userState):
+    def updateUserAccount(self, userID, password, name, email, profile, userState):
         check_sql = "SELECT * FROM UserAccount WHERE userID = %s"
         if self.db.fetch(check_sql, (userID,)):
             sql = """UPDATE UserAccount
@@ -97,7 +97,7 @@ class UserAccount:
             return {"message": f"User {userID} update failed — not found."}
         
     #Suspend Account
-    def suspend_acct(self, userID, userState):
+    def suspendUserAccount(self, userID, userState):
         # Normalize case
         userState = userState.lower()
 
@@ -135,7 +135,7 @@ class UserAccount:
 
 
     #Search Account
-    def search_users(self, **kwargs):
+    def searchUsers(self, **kwargs):
         # Remove empty values
         search_fields = {k: v for k, v in kwargs.items() if v}
 

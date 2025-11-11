@@ -5,4 +5,4 @@ class ListUserProfile:
         self.user_entity = UserProfile()
     
     def listProfile(self):
-        return self.user_entity.list_profile()
+        return self.user_entity.listProfile()

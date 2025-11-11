@@ -9,4 +9,4 @@ class SearchUserAccount:
         #remove empty values
         search_fields = {k: v for k, v in search_fields.items() if v}
         # Call the entity method
-        return self.user_entity.search_users(**search_fields)
+        return self.user_entity.searchUsers(**search_fields)

@@ -9,4 +9,4 @@ class SearchUserProfile:
         #remove empty values
         search_fields = {k: v for k, v in search_fields.items() if v}
         # Call the entity method
-        return self.user_entity.search_profiles(**search_fields)
+        return self.user_entity.searchProfiles(**search_fields)

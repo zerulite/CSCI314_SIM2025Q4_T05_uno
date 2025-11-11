@@ -5,4 +5,4 @@ class ViewUserAccount:
         self.user_entity = UserAccount()
     
     def viewUserAccount(self, user_id):
-        return self.user_entity.view_acct(user_id)
+        return self.user_entity.viewUserAccount(user_id)
