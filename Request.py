@@ -377,10 +377,6 @@ class Request:
         return testChecker
     
     def isCategoryValid(self, category: str):
-        if not category.isalpha():
-            return False
-        else:
-            category = category.capitalize()
         sql = """SELECT category FROM category"""
         result = self.db.fetch(sql)
         for cat in result:

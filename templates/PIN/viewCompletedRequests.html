@@ -25,8 +25,45 @@
                         >
                     </div>
             <h1 class="container mt-5 text-center">Completed Requests</h1>
+
+            <div class="container text-center">
+                <table class="table mt-2">
+                    <thead>
+                        <tr>
+                            <th scope="col">Request Description</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if results and results|length > 0 %}
+                            {% for row in results %}
+                            <tr>
+                                <td>{{ row[1] }}</td>
+                                <td>{{ row[2] }}</td>
+                                <td>{{ row[3] }}</td>
+                                <td>{{ row[7] }}</td>
+                                <td>{{ row[4] }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">
+                                    {% if message %}
+                                        <span class="text-danger">{{ message }}</span>
+                                    {% else %}
+                                        No completed requests available.
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
             
-            {%if result=="Failed to view request: User does not have any completed requests."%}
+            <!-- {%if result=="Failed to view request: User does not have any completed requests."%}
             <h3 class="container error text-center">No completed requests!</div>
             {%else%}
             <table class="table mt-2">
@@ -52,7 +89,7 @@
                         {%endfor%}
                     </tbody>
                 </table>
-                {%endif%}
+                {%endif%} -->
         </div>
     </body>
 </html>
