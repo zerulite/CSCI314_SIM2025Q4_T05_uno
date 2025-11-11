@@ -5,10 +5,10 @@ class UpdateCategory:
         self.category = Category()
         
     def getCategory(self, category):
-        category_data = self.category.view_category(category)
+        category_data = self.category.viewCategory(category)
         return category_data
     
     def updateCategory(self, category, description):
-        response = self.category.update_category(category, description)
+        response = self.category.updateCategory(category, description)
         return response
     

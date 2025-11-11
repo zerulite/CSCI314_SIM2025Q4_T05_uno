@@ -159,7 +159,7 @@ class UserAccount:
         return self.db.fetch(query, params)
     
     #Login
-    def login(self, userID, password):
+    def loginUser(self, userID, password):
         # Check for missing fields
         if not userID or not password:
             return {"success": False, "message": "All fields are required."}

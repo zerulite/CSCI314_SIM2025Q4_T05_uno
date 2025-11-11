@@ -590,7 +590,7 @@ class Request:
         return self.db.fetch(sql, ("Completed", int(limit), int(offset)))
         
     # Generate report by date
-    def get_requests_by_date(self, date):
+    def generateDailyReport(self, date):
         query = """
         SELECT 
             r.requestID, 
@@ -623,7 +623,7 @@ class Request:
         ]
 
     # Generate report by week
-    def get_requests_by_week(self, week_start):
+    def generateWeeklyReport(self, week_start):
         query = """
         SELECT 
             r.requestID, 
@@ -656,7 +656,7 @@ class Request:
         ]
 
     # Generate report by Month
-    def get_requests_by_month(self, date):
+    def generateMonthlyReport(self, date):
         """
         Fetch all requests for the month of the given date.
         `date` is expected to be a string in 'YYYY-MM-DD' format.

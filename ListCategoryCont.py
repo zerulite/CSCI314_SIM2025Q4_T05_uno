@@ -5,4 +5,4 @@ class ListCategory:
         self.category = Category()
     
     def listCategory(self):
-        return self.category.list_category()
+        return self.category.listCategory()

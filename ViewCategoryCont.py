@@ -5,4 +5,4 @@ class ViewCategory:
         self.category = Category()
     
     def viewCategory(self, category):
-        return self.category.view_category(category)
+        return self.category.viewCategory(category)

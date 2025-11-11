@@ -5,5 +5,5 @@ class CreateCategory:
         self.category = Category()
 
     def createCategory(self, category, description):
-        response = self.category.create_category(category, description)
+        response = self.category.createCategory(category, description)
         return response

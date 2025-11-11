@@ -41,7 +41,7 @@ class Category:
         self.db = Database()
 
     #Create Category
-    def create_category(self, category, description):
+    def createCategory(self, category, description):
         #Check if any field is empty
         if not all([category, description]):
             return {"message": "Failed to create category: all fields are required."}
@@ -61,7 +61,7 @@ class Category:
 
 
     # View Account
-    def view_category(self, category):
+    def viewCategory(self, category):
         sql = "SELECT * FROM Category WHERE category = %s"
         result = self.db.fetch(sql, (category,))
         if not result:
@@ -69,12 +69,12 @@ class Category:
         return result[0]
 
     # List all Accounts
-    def list_category(self):
+    def listCategory(self):
         sql = "SELECT category, description FROM Category"
         return self.db.fetch(sql)
 
     #Update Category
-    def update_category(self, category, description):
+    def updateCategory(self, category, description):
         check_sql = "SELECT * FROM Category WHERE category = %s"
         if self.db.fetch(check_sql, (category,)):
             sql = """UPDATE Category
@@ -87,7 +87,7 @@ class Category:
             return {"message": f"Category {category} update failed — not found."}
 
     #Delete Category
-    def delete_category(self, category):
+    def deleteCategory(self, category):
             if not category:
                 return {"success": False, "message": "Category is required."}
 
@@ -111,7 +111,7 @@ class Category:
                 return {"success": False, "message": str(e)}
             
     #Search Category
-    def search_category(self, **kwargs):
+    def searchCategory(self, **kwargs):
         # Remove empty values
         search_fields = {k: v for k, v in kwargs.items() if v}
 

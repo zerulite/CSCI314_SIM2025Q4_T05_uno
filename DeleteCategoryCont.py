@@ -5,5 +5,5 @@ class DeleteCategory:
         self.category = Category()
 
     def deleteCategory(self, category):
-        response = self.category.delete_category(category)
+        response = self.category.deleteCategory(category)
         return response
