@@ -5,7 +5,7 @@ class UpdateUserProfile:
         self.user_profile = UserProfile()
         
     def getProfile(self, profile):
-        profile_data = self.user_profile.view_profile(profile)
+        profile_data = self.user_profile.viewUserProfile(profile)
         return profile_data
     
     def updateUserProfile(self, profile, description, profileState):
