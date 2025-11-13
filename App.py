@@ -2,6 +2,7 @@ from flask import *
 
 # Login
 from LoginCont import *
+from LogoutCont import *
 
 # PIN
 from CreateReqCont import *
@@ -564,12 +565,13 @@ def userLogin():
     
     return render_template('login.html')
 
-
 #Logout
 @app.route('/logout')
 def userLogout():
+    controller = Logout()
+    result = controller.logoutUser()
     session.clear()
-    flash("You have been logged out.", "info")
+    flash(result["message"], "info")
     return redirect(url_for('userLogin'))
 
 @app.route('/CSRHome')

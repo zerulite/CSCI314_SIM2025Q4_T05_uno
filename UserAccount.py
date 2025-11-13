@@ -184,6 +184,9 @@ class UserAccount:
             "user": user
         }
     
+    def logoutUser(self):
+        return {"message": "You have been logged out."}
+    
     def check_profile(self, profile):
         # Fetch the profile state
         check_profile_sql = "SELECT profileState FROM UserProfile WHERE profile = %s"
